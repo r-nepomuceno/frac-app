@@ -1,0 +1,15 @@
+<!doctype html><html><body>
+  <h1>Executives</h1>
+  {% if execs %}
+    <ul>
+      {% for e in execs %}
+        <li>
+          <a href="{{ e.id }}/"><strong>{{ e.name }}</strong></a> — {{ e.title }}<br>
+          <small>{{ e.skills_text }} | {{ e.rate_text }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No profiles yet. (Seed via /admin)</p>
+  {% endif %}
+</body></html>
