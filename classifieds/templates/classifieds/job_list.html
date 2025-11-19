@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Open Jobs</title>
+</head>
+<body>
+    <h1>Open Jobs</h1>
+
+    <p><a href="{% url 'post_job' %}">Post a New Job</a></p>
+
+    {% if jobs %}
+        <ul>
+            {% for job in jobs %}
+                <li>
+                    <strong>{{ job.title }}</strong> at {{ job.company }} <br>
+                    {{ job.description|truncatewords:20 }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No jobs posted yet.</p>
+    {% endif %}
+</body>
+</html>
