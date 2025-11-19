@@ -8,7 +8,7 @@ urlpatterns = [
     path("executives/", include("classifieds.urls")),
 
     # Jobs (handled by classifieds/job_urls.py)
-    path("jobs/", include("classifieds.job_urls")),
+    path("jobs/", include("classifieds.urls")),
 
     # Healthcheck
     path("health/", include("health_check.urls")),
