@@ -9,7 +9,4 @@ urlpatterns = [
 
     # Jobs (handled by classifieds/job_urls.py)
     path("jobs/", include("classifieds.urls")),
-
-    # Healthcheck
-    path("health/", include("health_check.urls")),
 ]
