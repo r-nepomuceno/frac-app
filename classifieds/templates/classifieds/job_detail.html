@@ -1,10 +1,27 @@
-<h1>{{ job.title }} — {{ job.company }}</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ job.title }} - Job Details</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}">Home</a> |
+        <a href="{% url 'exec_list' %}">Executives</a> |
+        <a href="{% url 'job_list' %}">Jobs</a> |
+        <a href="{% url 'create_profile' %}">Create Profile</a> |
+        <a href="{% url 'post_job' %}">Post Job</a>
+    </nav>
+    <hr>
 
-<p><strong>Description:</strong></p>
-<p>{{ job.description|linebreaks }}</p>
+    <a href="{% url 'job_list' %}">&larr; Back to Jobs</a>
 
-<p><strong>Duration:</strong> {{ job.duration_text }}</p>
-<p><strong>Budget:</strong> {{ job.budget_text }}</p>
-<p><strong>Contact:</strong> {{ job.contact_email }}</p>
+    <h1>{{ job.title }} — {{ job.company }}</h1>
 
-<p><a href="{% url 'job_list' %}">← Back to all jobs</a></p>
+    <p><strong>Description:</strong></p>
+    <p>{{ job.description|linebreaks }}</p>
+
+    <p><strong>Duration:</strong> {{ job.duration_text }}</p>
+    <p><strong>Budget:</strong> {{ job.budget_text }}</p>
+    <p><strong>Contact:</strong> <a href="mailto:{{ job.contact_email }}">{{ job.contact_email }}</a></p>
+</body>
+</html>

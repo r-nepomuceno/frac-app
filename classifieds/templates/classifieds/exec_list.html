@@ -1,14 +1,29 @@
-<h1 style="color:blue">THIS IS THE EXECUTIVES PAGE</h1>
-
-<h1>Fractional Executives</h1>
-
-{% for exec in execs %}
-    <div>
-        <h2><a href="{% url 'exec_detail' exec.pk %}">{{ exec.name }}</a></h2>
-        <p>{{ exec.title }}</p>
-        <p><strong>Skills:</strong> {{ exec.skills_text }}</p>
-    </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fractional Executives</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}">Home</a> |
+        <a href="{% url 'exec_list' %}">Executives</a> |
+        <a href="{% url 'job_list' %}">Jobs</a> |
+        <a href="{% url 'create_profile' %}">Create Profile</a> |
+        <a href="{% url 'post_job' %}">Post Job</a>
+    </nav>
     <hr>
-{% empty %}
-    <p>No executives available yet.</p>
-{% endfor %}
+
+    <h1>Fractional Executives</h1>
+
+    {% for exec in execs %}
+        <div>
+            <h2><a href="{% url 'exec_detail' exec.pk %}">{{ exec.name }}</a></h2>
+            <p>{{ exec.title }}</p>
+            <p><strong>Skills:</strong> {{ exec.skills_text }}</p>
+        </div>
+        <hr>
+    {% empty %}
+        <p>No executives available yet.</p>
+    {% endfor %}
+</body>
+</html>

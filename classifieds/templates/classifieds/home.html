@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frac App - Fractional Executive Marketplace</title>
+</head>
+<body>
+    <h1>Fractional Executive Marketplace</h1>
+    
+    <h2>For Companies</h2>
+    <ul>
+        <li><a href="{% url 'exec_list' %}">Browse Fractional Executives</a></li>
+        <li><a href="{% url 'post_job' %}">Post a Job Opening</a></li>
+    </ul>
+    
+    <h2>For Executives</h2>
+    <ul>
+        <li><a href="{% url 'job_list' %}">Browse Available Jobs</a></li>
+        <li><a href="{% url 'create_profile' %}">Create Your Executive Profile</a></li>
+    </ul>
+</body>
+</html>

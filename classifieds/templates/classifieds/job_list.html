@@ -1,17 +1,30 @@
-<h1 style="color:red;">THIS IS THE JOB LIST PAGE (TEST)</h1>
-
-<h1>Open Fractional Roles</h1>
-
-{% for job in jobs %}
-    <div>
-        <h2><a href="{% url 'job_detail' job.pk %}">{{ job.title }}</a></h2>
-        <p><strong>Company:</strong> {{ job.company }}</p>
-        <p><strong>Budget:</strong> {{ job.budget_text }}</p>
-        <p><strong>Duration:</strong> {{ job.duration_text }}</p>
-    </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Open Fractional Roles</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}">Home</a> |
+        <a href="{% url 'exec_list' %}">Executives</a> |
+        <a href="{% url 'job_list' %}">Jobs</a> |
+        <a href="{% url 'create_profile' %}">Create Profile</a> |
+        <a href="{% url 'post_job' %}">Post Job</a>
+    </nav>
     <hr>
-{% empty %}
-    <p>No jobs posted yet.</p>
-{% endfor %}
 
-<p><a href="{% url 'post_job' %}">Post a new job →</a></p>
+    <h1>Open Fractional Roles</h1>
+
+    {% for job in jobs %}
+        <div>
+            <h2><a href="{% url 'job_detail' job.pk %}">{{ job.title }}</a></h2>
+            <p><strong>Company:</strong> {{ job.company }}</p>
+            <p><strong>Budget:</strong> {{ job.budget_text }}</p>
+            <p><strong>Duration:</strong> {{ job.duration_text }}</p>
+        </div>
+        <hr>
+    {% empty %}
+        <p>No jobs posted yet.</p>
+    {% endfor %}
+</body>
+</html>
