@@ -1,26 +1,32 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post a Job</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <nav>
-        <a href="{% url 'home' %}">Home</a> |
-        <a href="{% url 'exec_list' %}">Executives</a> |
-        <a href="{% url 'job_list' %}">Jobs</a> |
-        <a href="{% url 'create_profile' %}">Create Profile</a> |
-        <a href="{% url 'post_job' %}">Post Job</a>
+        <div class="container">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'exec_list' %}">Executives</a>
+            <a href="{% url 'job_list' %}">Jobs</a>
+            <a href="{% url 'create_profile' %}">Create Profile</a>
+            <a href="{% url 'post_job' %}">Post Job</a>
+        </div>
     </nav>
-    <hr>
 
-    <h1>Post a Job</h1>
+    <div class="container">
+        <h1>Post a Job</h1>
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-
-    <p><a href="{% url 'job_list' %}">&larr; Back to Jobs</a></p>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Submit Job</button>
+            <a href="{% url 'job_list' %}" class="btn btn-secondary" style="margin-left: 1rem;">Cancel</a>
+        </form>
+    </div>
 </body>
 </html>

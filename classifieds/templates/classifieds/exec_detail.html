@@ -1,32 +1,52 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ exec.name }} - Executive Profile</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
     <nav>
-        <a href="{% url 'home' %}">Home</a> |
-        <a href="{% url 'exec_list' %}">Executives</a> |
-        <a href="{% url 'job_list' %}">Jobs</a> |
-        <a href="{% url 'create_profile' %}">Create Profile</a> |
-        <a href="{% url 'post_job' %}">Post Job</a>
+        <div class="container">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'exec_list' %}">Executives</a>
+            <a href="{% url 'job_list' %}">Jobs</a>
+            <a href="{% url 'create_profile' %}">Create Profile</a>
+            <a href="{% url 'post_job' %}">Post Job</a>
+        </div>
     </nav>
-    <hr>
 
-    <a href="{% url 'exec_list' %}">&larr; Back to Executives</a>
-    
-    <h1>{{ exec.name }}</h1>
-    <p><em>{{ exec.title }}</em></p>
-    {% if exec.bio %}<p>{{ exec.bio }}</p>{% endif %}
-    <p><strong>Skills:</strong> {{ exec.skills_text }}</p>
-    {% if exec.rate_text %}<p><strong>Rate:</strong> {{ exec.rate_text }}</p>{% endif %}
-    {% if exec.timezone %}<p><strong>Timezone:</strong> {{ exec.timezone }}</p>{% endif %}
-
-    <p>
-        <a href="mailto:{{ exec.email }}?subject=Fractional opportunity">Email {{ exec.name }}</a>
-        <button onclick="navigator.clipboard.writeText('{{ exec.email }}'); alert('Email copied');">
-            Copy email
-        </button>
-    </p>
+    <div class="container">
+        <a href="{% url 'exec_list' %}" class="back-link">&larr; Back to Executives</a>
+        
+        <div class="detail-page">
+            {% if exec.rate_text %}
+                <span class="card-rate">{{ exec.rate_text }}</span>
+            {% endif %}
+            <h1>{{ exec.name }}</h1>
+            <h2>{{ exec.title }}</h2>
+            
+            {% if exec.bio %}
+                <p>{{ exec.bio }}</p>
+            {% endif %}
+            
+            <p><strong>Skills:</strong> {{ exec.skills_text }}</p>
+            
+            {% if exec.timezone %}
+                <p><strong>Timezone:</strong> {{ exec.timezone }}</p>
+            {% endif %}
+            
+            <p><strong>Email:</strong> {{ exec.email }}</p>
+            
+            <div style="margin-top: 2rem;">
+                <a href="mailto:{{ exec.email }}?subject=Fractional opportunity" class="btn">Contact {{ exec.name }}</a>
+                <button onclick="navigator.clipboard.writeText('{{ exec.email }}'); alert('Email copied!');" class="btn btn-secondary">
+                    Copy Email
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

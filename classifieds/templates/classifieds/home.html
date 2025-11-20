@@ -1,21 +1,44 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Frac App - Fractional Executive Marketplace</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
-    <h1>Fractional Executive Marketplace</h1>
-    
-    <h2>For Companies</h2>
-    <ul>
-        <li><a href="{% url 'exec_list' %}">Browse Fractional Executives</a></li>
-        <li><a href="{% url 'post_job' %}">Post a Job Opening</a></li>
-    </ul>
-    
-    <h2>For Executives</h2>
-    <ul>
-        <li><a href="{% url 'job_list' %}">Browse Available Jobs</a></li>
-        <li><a href="{% url 'create_profile' %}">Create Your Executive Profile</a></li>
-    </ul>
+    <div class="hero-section">
+        <div class="container">
+            <h1>Fractional Executive Marketplace</h1>
+            <p>Connect top executives with companies seeking fractional leadership</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>For Companies</h2>
+        <div class="button-grid">
+            <a href="{% url 'exec_list' %}" class="button-card">
+                <h3>Browse Executives</h3>
+                <p>Find experienced fractional executives ready to help your business grow</p>
+            </a>
+            <a href="{% url 'post_job' %}" class="button-card">
+                <h3>Post a Job</h3>
+                <p>Share your fractional role opening with qualified candidates</p>
+            </a>
+        </div>
+
+        <h2>For Executives</h2>
+        <div class="button-grid">
+            <a href="{% url 'job_list' %}" class="button-card">
+                <h3>Browse Jobs</h3>
+                <p>Discover fractional opportunities that match your expertise</p>
+            </a>
+            <a href="{% url 'create_profile' %}" class="button-card">
+                <h3>Create Your Profile</h3>
+                <p>Showcase your skills and connect with companies seeking your expertise</p>
+            </a>
+        </div>
+    </div>
 </body>
 </html>

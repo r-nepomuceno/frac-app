@@ -1,17 +1,32 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Executive Profile</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
-    <h1>Create Your Executive Profile</h1>
+    <nav>
+        <div class="container">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'exec_list' %}">Executives</a>
+            <a href="{% url 'job_list' %}">Jobs</a>
+            <a href="{% url 'create_profile' %}">Create Profile</a>
+            <a href="{% url 'post_job' %}">Post Job</a>
+        </div>
+    </nav>
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit Profile</button>
-    </form>
+    <div class="container">
+        <h1>Create Your Executive Profile</h1>
 
-    <p><a href="{% url 'home' %}">← Back to Home</a></p>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Submit Profile</button>
+            <a href="{% url 'home' %}" class="btn btn-secondary" style="margin-left: 1rem;">Cancel</a>
+        </form>
+    </div>
 </body>
 </html>
