@@ -27,3 +27,7 @@ def post_job(request):
 def job_list(request):
     jobs = Job.objects.order_by("-created_at")
     return render(request, "classifieds/job_list.html", {"jobs": jobs})
+
+def job_detail(request, pk):
+    job = get_object_or_404(Job, pk=pk)
+    return render(request, "classifieds/job_detail.html", {"job": job})
