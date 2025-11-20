@@ -92,12 +92,6 @@ USE_TZ = True
 # Static files (Render + WhiteNoise)
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# Tell Django where to find static files in your apps
-STATICFILES_DIRS = [
-    BASE_DIR / "classifieds" / "static",
-]
-
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # CSRF trusted origins (Render requires this)
