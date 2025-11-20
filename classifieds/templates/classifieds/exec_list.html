@@ -1,15 +1,12 @@
-<!doctype html><html><body>
-  <h1>Executives</h1>
-  {% if execs %}
-    <ul>
-      {% for e in execs %}
-        <li>
-          <a href="{{ e.id }}/"><strong>{{ e.name }}</strong></a> — {{ e.title }}<br>
-          <small>{{ e.skills_text }} | {{ e.rate_text }}</small>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No profiles yet. (Seed via /admin)</p>
-  {% endif %}
-</body></html>
+<h1>Fractional Executives</h1>
+
+{% for exec in execs %}
+    <div>
+        <h2><a href="{% url 'exec_detail' exec.pk %}">{{ exec.name }}</a></h2>
+        <p>{{ exec.title }}</p>
+        <p><strong>Skills:</strong> {{ exec.skills_text }}</p>
+    </div>
+    <hr>
+{% empty %}
+    <p>No executives available yet.</p>
+{% endfor %}
