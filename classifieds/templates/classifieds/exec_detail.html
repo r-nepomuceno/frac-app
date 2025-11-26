@@ -4,15 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ exec.name }} - Executive Profile</title>
+    <title>{{ exec.name }} - {{ exec.title }}</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    
+    <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-94TQ21MWZ6"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-94TQ21MWZ6');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-94TQ21MWZ6');
     </script>
+    
+    <style>
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+        .tag-badge {
+            display: inline-block;
+            background: #f0f4ff;
+            color: #5a67d8;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            border: 1px solid #c3dafe;
+            text-transform: lowercase;
+        }
+        .match-box {
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+            border: 2px solid #4299e1;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .match-box h3 {
+            color: #2b6cb0;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .match-score {
+            display: inline-block;
+            background: #4299e1;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            margin-left: 0.5rem;
+        }
+        .match-tag {
+            background: #bee3f8;
+            color: #2b6cb0;
+            border-color: #90cdf4;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -22,11 +73,9 @@
             <a href="{% url 'job_list' %}">Jobs</a>
             
             {% if user.is_authenticated %}
-                <!-- Logged IN: Show Dashboard and Logout -->
                 <a href="{% url 'dashboard' %}">Dashboard</a>
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
-                <!-- Logged OUT: Show Login and Sign Up -->
                 <a href="{% url 'login' %}">Login</a>
                 <a href="{% url 'signup' %}">Sign Up</a>
             {% endif %}
@@ -34,32 +83,73 @@
     </nav>
 
     <div class="container">
-        <a href="{% url 'exec_list' %}" class="back-link">&larr; Back to Executives</a>
+        <div style="margin-bottom: 1rem;">
+            <a href="{% url 'exec_list' %}" style="color: #667eea; text-decoration: none;">← Back to Executives</a>
+        </div>
         
-        <div class="detail-page">
+        <div style="background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
             {% if exec.rate_text %}
-                <span class="card-rate">{{ exec.rate_text }}</span>
-            {% endif %}
-            <h1>{{ exec.name }}</h1>
-            <h2>{{ exec.title }}</h2>
-            
-            {% if exec.bio %}
-                <p>{{ exec.bio }}</p>
+                <span style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 0.875rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 9999px; margin-bottom: 1rem;">
+                    {{ exec.rate_text }}
+                </span>
             {% endif %}
             
-            <p><strong>Skills:</strong> {{ exec.skills_text }}</p>
+            <h1 style="margin-bottom: 0.5rem;">{{ exec.name }}</h1>
+            <p style="font-size: 1.25rem; color: #4a5568; margin-bottom: 1rem;"><strong>{{ exec.title }}</strong></p>
             
             {% if exec.timezone %}
-                <p><strong>Timezone:</strong> {{ exec.timezone }}</p>
+                <p style="color: #718096;"><strong>Timezone:</strong> {{ exec.timezone }}</p>
             {% endif %}
             
-            <p><strong>Email:</strong> {{ exec.email }}</p>
+            <!-- Skills Tags -->
+            {% if exec.skills_tags %}
+                <div style="margin: 1.5rem 0;">
+                    <strong>Skills:</strong>
+                    <div class="tags-container">
+                        {% for tag in exec.get_tags_list %}
+                            <span class="tag-badge">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
             
-            <div style="margin-top: 2rem;">
-                <a href="mailto:{{ exec.email }}?subject=Fractional opportunity" class="btn">Contact {{ exec.name }}</a>
-                <button onclick="navigator.clipboard.writeText('{{ exec.email }}'); alert('Email copied!');" class="btn btn-secondary">
-                    Copy Email
-                </button>
+            <!-- Match Box - Shows if logged-in user has matching job postings -->
+            {% if matching_jobs %}
+                {% for match in matching_jobs %}
+                    <div class="match-box">
+                        <h3>
+                            🎯 Matches Your Job Posting!
+                            <span class="match-score">{{ match.match_info.match_count }}/{{ match.match_info.total_required }} requirements</span>
+                        </h3>
+                        <p style="margin-bottom: 0.75rem; color: #2b6cb0;">
+                            This executive matches {{ match.match_info.match_percentage }}% of your "<strong>{{ match.job.title }}</strong>" requirements.
+                        </p>
+                        <div class="tags-container">
+                            {% for tag in match.match_info.matching_tags %}
+                                <span class="tag-badge match-tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% if exec.bio %}
+                <div style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">About</h3>
+                    <p style="line-height: 1.8; color: #4a5568;">{{ exec.bio|linebreaks }}</p>
+                </div>
+            {% endif %}
+            
+            {% if exec.skills_text %}
+                <div style="margin-top: 1.5rem;">
+                    <h3 style="margin-bottom: 0.5rem;">Skills & Experience</h3>
+                    <p style="color: #4a5568;">{{ exec.skills_text }}</p>
+                </div>
+            {% endif %}
+            
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0;">
+                <p><strong>Contact:</strong> <a href="mailto:{{ exec.email }}" style="color: #667eea;">{{ exec.email }}</a></p>
+                <p style="color: #a0aec0; font-size: 0.875rem; margin-top: 0.5rem;">Profile created {{ exec.created_at|date:"F j, Y" }}</p>
             </div>
         </div>
     </div>

@@ -4,15 +4,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ job.title }} - Job Details</title>
+    <title>{{ job.title }} - {{ job.company }}</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    
+    <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-94TQ21MWZ6"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-94TQ21MWZ6');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-94TQ21MWZ6');
     </script>
+    
+    <style>
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+        .tag-badge {
+            display: inline-block;
+            background: #f0f4ff;
+            color: #5a67d8;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            border: 1px solid #c3dafe;
+            text-transform: lowercase;
+        }
+        .match-box {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border: 2px solid #48bb78;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .match-box h3 {
+            color: #276749;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .match-score {
+            display: inline-block;
+            background: #48bb78;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            margin-left: 0.5rem;
+        }
+        .match-tag {
+            background: #c6f6d5;
+            color: #276749;
+            border-color: #9ae6b4;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -22,13 +73,9 @@
             <a href="{% url 'job_list' %}">Jobs</a>
             
             {% if user.is_authenticated %}
-                <!-- Logged IN: Show Dashboard and Logout -->
                 <a href="{% url 'dashboard' %}">Dashboard</a>
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
-                <!-- Logged OUT: Show Login and Sign Up -->
-                <a href="{% url 'create_profile' %}">Create Profile</a>
-                <a href="{% url 'post_job' %}">Post Job</a>
                 <a href="{% url 'login' %}">Login</a>
                 <a href="{% url 'signup' %}">Sign Up</a>
             {% endif %}
@@ -36,26 +83,64 @@
     </nav>
 
     <div class="container">
-        <a href="{% url 'job_list' %}" class="back-link">&larr; Back to Jobs</a>
+        <div style="margin-bottom: 1rem;">
+            <a href="{% url 'job_list' %}" style="color: #667eea; text-decoration: none;">← Back to Jobs</a>
+        </div>
         
-        <div class="detail-page">
+        <div style="background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
             {% if job.budget_text %}
-                <span class="card-rate">{{ job.budget_text }}</span>
+                <span style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 0.875rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 9999px; margin-bottom: 1rem;">
+                    {{ job.budget_text }}
+                </span>
             {% endif %}
-            <h1>{{ job.title }}</h1>
-            <h2>{{ job.company }}</h2>
             
-            <p><strong>Description:</strong></p>
-            <p>{{ job.description|linebreaks }}</p>
+            <h1 style="margin-bottom: 0.5rem;">{{ job.title }}</h1>
+            <p style="font-size: 1.25rem; color: #4a5568; margin-bottom: 1rem;"><strong>{{ job.company }}</strong></p>
             
             {% if job.duration_text %}
-                <p><strong>Duration:</strong> {{ job.duration_text }}</p>
+                <p style="color: #718096;"><strong>Duration:</strong> {{ job.duration_text }}</p>
             {% endif %}
             
-            <p><strong>Contact:</strong> {{ job.contact_email }}</p>
+            <!-- Required Skills Tags -->
+            {% if job.required_skills_tags %}
+                <div style="margin: 1.5rem 0;">
+                    <strong>Required Skills:</strong>
+                    <div class="tags-container">
+                        {% for tag in job.get_tags_list %}
+                            <span class="tag-badge">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            <!-- Match Box - Shows if logged-in user has matching profile -->
+            {% if matching_profiles %}
+                {% for match in matching_profiles %}
+                    <div class="match-box">
+                        <h3>
+                            🎯 Your Profile Matches!
+                            <span class="match-score">{{ match.match_info.match_count }}/{{ match.match_info.total_required }} skills</span>
+                        </h3>
+                        <p style="margin-bottom: 0.75rem; color: #276749;">
+                            Your profile "<strong>{{ match.profile.name }}</strong>" matches {{ match.match_info.match_percentage }}% of the required skills.
+                        </p>
+                        <div class="tags-container">
+                            {% for tag in match.match_info.matching_tags %}
+                                <span class="tag-badge match-tag">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
             
             <div style="margin-top: 2rem;">
-                <a href="mailto:{{ job.contact_email }}?subject=Application for {{ job.title }}" class="btn">Apply Now</a>
+                <h3 style="margin-bottom: 1rem;">Description</h3>
+                <p style="line-height: 1.8; color: #4a5568;">{{ job.description|linebreaks }}</p>
+            </div>
+            
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0;">
+                <p><strong>Contact:</strong> <a href="mailto:{{ job.contact_email }}" style="color: #667eea;">{{ job.contact_email }}</a></p>
+                <p style="color: #a0aec0; font-size: 0.875rem; margin-top: 0.5rem;">Posted {{ job.created_at|date:"F j, Y" }}</p>
             </div>
         </div>
     </div>

@@ -6,20 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Dashboard</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    
+    <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-94TQ21MWZ6"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-94TQ21MWZ6');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-94TQ21MWZ6');
     </script>
+    
     <style>
-        /* Inline tag styles to ensure they work */
+        a { text-decoration: none !important; }
         .tags-container {
             display: flex;
             flex-wrap: wrap;
             gap: 0.4rem;
-            margin-top: 1rem;
+            margin-top: 0.5rem;
         }
         .tag-badge {
             display: inline-block;
@@ -31,7 +34,35 @@
             border-radius: 9999px;
             border: 1px solid #c3dafe;
             text-transform: lowercase;
-            white-space: nowrap;
+        }
+        .match-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.3rem 0.6rem;
+            border-radius: 9999px;
+        }
+        .suggestions-section {
+            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
+            border: 1px solid #9ae6b4;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        .suggestions-section.blue {
+            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+            border-color: #90cdf4;
+        }
+        .suggestions-section h2 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card-clickable {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -49,6 +80,55 @@
     <div class="container">
         <h1>My Dashboard</h1>
         <p>Welcome back, <strong>{{ user.username }}</strong>!</p>
+
+        <!-- Suggested Jobs Section (for executives) -->
+        {% if suggested_jobs %}
+            <div class="suggestions-section">
+                <h2>🎯 Jobs Matching Your Skills</h2>
+                <div class="card-grid">
+                    {% for item in suggested_jobs %}
+                        <div class="card card-clickable" onclick="window.location='{% url 'job_detail' item.job.pk %}'">
+                            <span class="match-badge">{{ item.match_info.match_count }} skills match</span>
+                            {% if item.job.budget_text %}
+                                <span class="card-rate">{{ item.job.budget_text }}</span>
+                            {% endif %}
+                            <h2 style="margin-top: 0.5rem;">{{ item.job.title }}</h2>
+                            <p><strong>{{ item.job.company }}</strong></p>
+                            <div class="tags-container">
+                                {% for tag in item.match_info.matching_tags %}
+                                    <span class="tag-badge" style="background: #c6f6d5; color: #276749; border-color: #9ae6b4;">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
+        <!-- Suggested Executives Section (for startups) -->
+        {% if suggested_executives %}
+            <div class="suggestions-section blue">
+                <h2>🎯 Executives Matching Your Job Requirements</h2>
+                <div class="card-grid">
+                    {% for item in suggested_executives %}
+                        <div class="card card-clickable" onclick="window.location='{% url 'exec_detail' item.executive.pk %}'">
+                            <span class="match-badge" style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);">{{ item.match_info.match_count }} skills match</span>
+                            {% if item.executive.rate_text %}
+                                <span class="card-rate">{{ item.executive.rate_text }}</span>
+                            {% endif %}
+                            <h2 style="margin-top: 0.5rem;">{{ item.executive.name }}</h2>
+                            <p><strong>{{ item.executive.title }}</strong></p>
+                            <p style="font-size: 0.85rem; color: #718096;">For: {{ item.job.title }}</p>
+                            <div class="tags-container">
+                                {% for tag in item.match_info.matching_tags %}
+                                    <span class="tag-badge" style="background: #bee3f8; color: #2b6cb0; border-color: #90cdf4;">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
 
         <!-- Executive Profiles Section -->
         <div style="margin-top: 3rem;">
@@ -70,7 +150,6 @@
                                 <p>{{ profile.skills_text }}</p>
                             {% endif %}
                             
-                            <!-- Tags as individual pills -->
                             {% with tags=profile.get_tags_list %}
                                 {% if tags %}
                                     <div class="tags-container">
@@ -116,7 +195,6 @@
                                 <span class="card-label">{{ job.duration_text }}</span>
                             {% endif %}
                             
-                            <!-- Tags as individual pills -->
                             {% with tags=job.get_tags_list %}
                                 {% if tags %}
                                     <div class="tags-container">

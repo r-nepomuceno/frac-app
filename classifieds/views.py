@@ -5,6 +5,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import ExecutiveProfile, Job
 from .forms import JobForm, ExecutiveProfileForm
 import random
+from .matching import calculate_match, find_matching_jobs_for_executive, find_matching_executives_for_job, get_dashboard_matches
 
 
 # ========== AUTHENTICATION VIEWS ==========
@@ -47,13 +48,24 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    """User dashboard showing their profiles and jobs"""
+    """User dashboard with suggested matches."""
     my_profiles = ExecutiveProfile.objects.filter(owner=request.user)
     my_jobs = Job.objects.filter(owner=request.user)
+    
+    # Get all active jobs and profiles for matching
+    all_jobs = Job.objects.filter(is_active=True)
+    all_executives = ExecutiveProfile.objects.all()
+    
+    # Get suggested matches
+    matches = get_dashboard_matches(request.user, all_jobs, all_executives)
     
     return render(request, "classifieds/dashboard.html", {
         "my_profiles": my_profiles,
         "my_jobs": my_jobs,
+        "suggested_jobs": matches['suggested_jobs'][:5],  # Top 5
+        "suggested_executives": matches['suggested_executives'][:5],  # Top 5
+        "user_has_profile": matches['user_has_profile'],
+        "user_has_jobs": matches['user_has_jobs'],
     })
 
 
@@ -127,8 +139,28 @@ def exec_list(request):
 
 
 def exec_detail(request, pk):
-    obj = get_object_or_404(ExecutiveProfile, pk=pk)
-    return render(request, "classifieds/exec_detail.html", {"exec": obj})
+    """Executive detail page with job matching for logged-in users."""
+    exec_profile = get_object_or_404(ExecutiveProfile, pk=pk)
+    
+    context = {
+        'exec': exec_profile,
+        'matching_jobs': [],
+    }
+    
+    # If user is logged in and has job postings, show matches
+    if request.user.is_authenticated:
+        user_jobs = Job.objects.filter(owner=request.user, is_active=True)
+        if user_jobs.exists() and exec_profile.skills_tags:
+            for job in user_jobs:
+                if job.required_skills_tags:
+                    match_info = calculate_match(exec_profile.skills_tags, job.required_skills_tags)
+                    if match_info['match_count'] > 0:
+                        context['matching_jobs'].append({
+                            'job': job,
+                            'match_info': match_info,
+                        })
+    
+    return render(request, "classifieds/exec_detail.html", context)
 
 
 @login_required
@@ -155,8 +187,28 @@ def job_list(request):
 
 
 def job_detail(request, pk):
+    """Job detail page with executive matching for logged-in users."""
     job = get_object_or_404(Job, pk=pk)
-    return render(request, "classifieds/job_detail.html", {"job": job})
+    
+    context = {
+        'job': job,
+        'matching_profiles': [],
+    }
+    
+    # If user is logged in and has executive profiles, show matches
+    if request.user.is_authenticated:
+        user_profiles = ExecutiveProfile.objects.filter(owner=request.user)
+        if user_profiles.exists() and job.required_skills_tags:
+            for profile in user_profiles:
+                if profile.skills_tags:
+                    match_info = calculate_match(profile.skills_tags, job.required_skills_tags)
+                    if match_info['match_count'] > 0:
+                        context['matching_profiles'].append({
+                            'profile': profile,
+                            'match_info': match_info,
+                        })
+    
+    return render(request, "classifieds/job_detail.html", context)
 
 
 @login_required
