@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frac App - Fractional Executive Marketplace</title>
+    <title>Fractional Executive Marketplace</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}">
 </head>
 <body>
@@ -15,48 +15,71 @@
             <a href="{% url 'job_list' %}">Jobs</a>
             
             {% if user.is_authenticated %}
-                <!-- Logged IN: Show Dashboard and Logout -->
                 <a href="{% url 'dashboard' %}">Dashboard</a>
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
-                <!-- Logged OUT: Show Login and Sign Up -->
                 <a href="{% url 'login' %}">Login</a>
                 <a href="{% url 'signup' %}">Sign Up</a>
             {% endif %}
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <div class="hero-section">
         <div class="container">
             <h1>Fractional Executive Marketplace</h1>
-            <p>Connect top executives with companies seeking fractional leadership</p>
+            <p style="font-size: 1.25rem; margin-top: 1rem; opacity: 0.9;">
+                Connect startups with experienced fractional leaders
+            </p>
         </div>
     </div>
 
-    <div class="container">
-        <h2>For Companies</h2>
-        <div class="button-grid">
-            <a href="{% url 'exec_list' %}" class="button-card">
-                <h3>Browse Executives</h3>
-                <p>Find experienced fractional executives ready to help your business grow</p>
+    <!-- Two-Path Cards -->
+    <div class="container" style="margin-top: 4rem; margin-bottom: 6rem;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; max-width: 900px; margin: 0 auto;">
+            
+            <!-- For Startups Card -->
+            <a href="{% url 'for_startups' %}" style="background: white; border: 2px solid #e2e8f0; border-radius: 16px; padding: 3rem 2.5rem; text-align: center; transition: all 0.3s ease; text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 280px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);">
+                <h2 style="font-size: 2rem; margin-bottom: 1rem; color: #0a0a0a; font-weight: 600;">For Startups</h2>
+                <p style="font-size: 1.125rem; line-height: 1.6; color: #4a5568; margin-bottom: 0;">Find experienced fractional executives to accelerate your growth and scale your team</p>
+                <div style="margin-top: 2rem;"></div>
             </a>
-            <a href="{% url 'post_job' %}" class="button-card">
-                <h3>Post a Job</h3>
-                <p>Share your fractional role opening with qualified candidates</p>
+            
+            <!-- For Fractionals Card -->
+            <a href="{% url 'for_fractionals' %}" style="background: white; border: 2px solid #e2e8f0; border-radius: 16px; padding: 3rem 2.5rem; text-align: center; transition: all 0.3s ease; text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 280px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);">
+                <h2 style="font-size: 2rem; margin-bottom: 1rem; color: #0a0a0a; font-weight: 600;">For Fractional Executives</h2>
+                <p style="font-size: 1.125rem; line-height: 1.6; color: #4a5568; margin-bottom: 0;">Discover meaningful fractional opportunities at growing startups and innovative companies</p>
+            <div style="margin-top: 2rem;"></div>
             </a>
-        </div>
-
-        <h2>For Executives</h2>
-        <div class="button-grid">
-            <a href="{% url 'job_list' %}" class="button-card">
-                <h3>Browse Jobs</h3>
-                <p>Discover fractional opportunities that match your expertise</p>
-            </a>
-            <a href="{% url 'create_profile' %}" class="button-card">
-                <h3>Create Your Profile</h3>
-                <p>Showcase your skills and connect with companies seeking your expertise</p>
-            </a>
+            
         </div>
     </div>
+
+    <!-- Why Fractional Section -->
+    <div class="container" style="margin-bottom: 4rem;">
+        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
+            <h2 style="margin-bottom: 1.5rem;">Why Fractional?</h2>
+            <p style="font-size: 1.125rem; line-height: 1.8; color: #4a5568;">
+                Access top-tier executive talent on a flexible, fractional basis. 
+                Get the strategic leadership you need without the full-time commitment.
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Add hover effect via JavaScript since inline styles don't support :hover
+        document.querySelectorAll('a[href*="for-"]').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+                this.style.borderColor = '#667eea';
+                this.style.boxShadow = '0 12px 24px rgba(102, 126, 234, 0.15)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.borderColor = '#e2e8f0';
+                this.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.04)';
+            });
+        });
+    </script>
 </body>
 </html>

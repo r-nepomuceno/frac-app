@@ -108,6 +108,16 @@ def home(request):
     return render(request, "classifieds/home.html")
 
 
+def for_startups(request):
+    """Landing page for startups looking to hire"""
+    return render(request, "classifieds/for_startups.html")
+
+
+def for_fractionals(request):
+    """Landing page for fractional executives"""
+    return render(request, "classifieds/for_fractionals.html")
+
+
 # ========== EXECUTIVE VIEWS ==========
 
 def exec_list(request):

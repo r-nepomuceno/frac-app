@@ -18,8 +18,12 @@ urlpatterns = [
     path("login/", views.login_view, name="login"),
     path("logout/", views.logout_view, name="logout"),
     
-    # NEW: Dashboard
+    # Dashboard
     path("dashboard/", views.dashboard, name="dashboard"),
+    
+    # NEW: Two-path landing pages
+    path("for-startups/", views.for_startups, name="for_startups"),
+    path("for-fractionals/", views.for_fractionals, name="for_fractionals"),
 
     # Executives
     path("executives/", include("classifieds.urls")),
