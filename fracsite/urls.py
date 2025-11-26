@@ -21,9 +21,13 @@ urlpatterns = [
     # Dashboard
     path("dashboard/", views.dashboard, name="dashboard"),
     
-    # NEW: Two-path landing pages
+    # Two-path landing pages
     path("for-startups/", views.for_startups, name="for_startups"),
     path("for-fractionals/", views.for_fractionals, name="for_fractionals"),
+    
+    # A/B Test endpoint (MANDATORY for Sprint 4)
+    # URL computed from sha1("restless-sound")[:7] = "b77952e"
+    path("b77952e/", views.ab_test, name="ab_test"),
 
     # Executives
     path("executives/", include("classifieds.urls")),

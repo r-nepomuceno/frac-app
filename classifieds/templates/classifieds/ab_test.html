@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fractional Executive Marketplace</title>
+    <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-94TQ21MWZ6"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-94TQ21MWZ6');
+    </script>
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'exec_list' %}">Executives</a>
+            <a href="{% url 'job_list' %}">Jobs</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- A/B Test Hero Section -->
+    <div style="background: linear-gradient(135deg, {{ content.color }} 0%, {% if variant == 'A' %}#764ba2{% else %}#38a169{% endif %} 100%); color: white; padding: 6rem 2rem; text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <!-- Variant Badge (for testing visibility) -->
+            <div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; margin-bottom: 1rem;">
+                Variant {{ variant }}
+            </div>
+            
+            <h1 style="font-size: 3rem; margin-bottom: 1rem; color: white;">
+                {{ content.headline }}
+            </h1>
+            <p style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 2rem; color: white;">
+                {{ content.subheadline }}
+            </p>
+            <a href="{% url 'exec_list' %}" class="btn" style="background: white; color: {{ content.color }}; padding: 1rem 2rem; font-size: 1.1rem;">
+                {{ content.cta_text }} →
+            </a>
+        </div>
+    </div>
+
+    <!-- Info Section -->
+    <div class="container" style="margin-top: 4rem; margin-bottom: 4rem;">
+        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+            <h2 style="margin-bottom: 1rem;">A/B Test Demonstration</h2>
+            <p style="color: #4a5568; line-height: 1.8;">
+                This page demonstrates A/B testing functionality. You've been assigned to 
+                <strong>Variant {{ variant }}</strong>. Your assignment is stored in your session 
+                and will persist across page refreshes.
+            </p>
+            
+            <div style="margin-top: 2rem; padding: 1.5rem; background: #f7fafc; border-radius: 12px; text-align: left;">
+                <h3 style="margin-bottom: 0.75rem;">Technical Details:</h3>
+                <ul style="color: #4a5568; line-height: 2;">
+                    <li><strong>Endpoint:</strong> /b77952e</li>
+                    <li><strong>Team:</strong> restless-sound</li>
+                    <li><strong>Your Variant:</strong> {{ variant }}</li>
+                    <li><strong>Headline:</strong> "{{ content.headline }}"</li>
+                    <li><strong>CTA:</strong> "{{ content.cta_text }}"</li>
+                </ul>
+            </div>
+            
+            <p style="margin-top: 2rem; font-size: 0.9rem; color: #718096;">
+                To see the other variant, clear your browser cookies/session and refresh.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

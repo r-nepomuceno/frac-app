@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ExecutiveProfile, Job
 from .forms import JobForm, ExecutiveProfileForm
+import random
 
 
 # ========== AUTHENTICATION VIEWS ==========
@@ -172,3 +173,37 @@ def post_job(request):
         form = JobForm()
 
     return render(request, "classifieds/post_job.html", {"form": form})
+
+
+def ab_test(request):
+    """
+    A/B Test endpoint at /b77952e
+    Randomly assigns users to variant A or B and persists in session.
+    """
+    # Check if user already has a variant assigned
+    if 'ab_variant' not in request.session:
+        # Randomly assign A or B (50/50 split)
+        request.session['ab_variant'] = random.choice(['A', 'B'])
+    
+    variant = request.session['ab_variant']
+    
+    # Define variant-specific content
+    variants = {
+        'A': {
+            'headline': 'Find Your Perfect Fractional Executive',
+            'subheadline': 'Connect with experienced leaders ready to scale your startup',
+            'cta_text': 'Browse Executives',
+            'color': '#667eea',  # Purple
+        },
+        'B': {
+            'headline': 'Connect With Top Fractional Talent',
+            'subheadline': 'Discover flexible executive solutions for your growing business',
+            'cta_text': 'Explore Talent',
+            'color': '#48bb78',  # Green
+        }
+    }
+    
+    return render(request, 'classifieds/ab_test.html', {
+        'variant': variant,
+        'content': variants[variant],
+    })
