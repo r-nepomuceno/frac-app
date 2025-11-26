@@ -7,15 +7,16 @@ def health_check(request):
     return HttpResponse("ok")
 
 urlpatterns = [
-    path("", views.home, name="home"),  # Home page at root
+    path("", views.home, name="home"),
     path("admin/", admin.site.urls),
     
-    # Health check for monitoring
     path("health/", health_check, name="health"),
+    
+    path("signup/", views.signup_view, name="signup"),
+    path("login/", views.login_view, name="login"),
+    path("logout/", views.logout_view, name="logout"),
 
-    # Executives (handled by classifieds/urls.py)
     path("executives/", include("classifieds.urls")),
 
-    # Jobs (handled by classifieds/job_urls.py)
     path("jobs/", include("classifieds.job_urls")),
 ]

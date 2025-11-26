@@ -1,12 +1,56 @@
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ExecutiveProfile, Job
 from .forms import JobForm, ExecutiveProfileForm
 
 
+# ========== AUTHENTICATION VIEWS ==========
+
+def signup_view(request):
+    """User registration"""
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # Auto-login after signup
+            return redirect("home")
+    else:
+        form = UserCreationForm()
+    
+    return render(request, "classifieds/signup.html", {"form": form})
+
+
+def login_view(request):
+    """User login"""
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            # Redirect to 'next' parameter or home
+            next_url = request.GET.get('next', 'home')
+            return redirect(next_url)
+    else:
+        form = AuthenticationForm()
+    
+    return render(request, "classifieds/login.html", {"form": form})
+
+
+def logout_view(request):
+    """User logout"""
+    logout(request)
+    return redirect("home")
+
+
+# ========== HOME ==========
+
 def home(request):
-    """Landing page with navigation"""
     return render(request, "classifieds/home.html")
 
+
+# ========== EXECUTIVE VIEWS ==========
 
 def exec_list(request):
     execs = ExecutiveProfile.objects.order_by("-created_at")
@@ -18,12 +62,15 @@ def exec_detail(request, pk):
     return render(request, "classifieds/exec_detail.html", {"exec": obj})
 
 
+@login_required
 def create_profile(request):
-    """Create a new executive profile"""
+    """Create a new executive profile (LOGIN REQUIRED)"""
     if request.method == "POST":
         form = ExecutiveProfileForm(request.POST)
         if form.is_valid():
-            form.save()
+            profile = form.save(commit=False)
+            profile.owner = request.user  # Assign owner
+            profile.save()
             return redirect("exec_list")
     else:
         form = ExecutiveProfileForm()
@@ -31,17 +78,7 @@ def create_profile(request):
     return render(request, "classifieds/create_profile.html", {"form": form})
 
 
-def post_job(request):
-    if request.method == "POST":
-        form = JobForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect("job_list")
-    else:
-        form = JobForm()
-
-    return render(request, "classifieds/post_job.html", {"form": form})
-
+# ========== JOB VIEWS ==========
 
 def job_list(request):
     jobs = Job.objects.order_by("-created_at")
@@ -51,3 +88,19 @@ def job_list(request):
 def job_detail(request, pk):
     job = get_object_or_404(Job, pk=pk)
     return render(request, "classifieds/job_detail.html", {"job": job})
+
+
+@login_required
+def post_job(request):
+    """Post a new job (LOGIN REQUIRED)"""
+    if request.method == "POST":
+        form = JobForm(request.POST)
+        if form.is_valid():
+            job = form.save(commit=False)
+            job.owner = request.user  # Assign owner
+            job.save()
+            return redirect("job_list")
+    else:
+        form = JobForm()
+
+    return render(request, "classifieds/post_job.html", {"form": form})

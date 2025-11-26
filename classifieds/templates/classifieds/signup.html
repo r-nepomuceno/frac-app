@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'exec_list' %}">Executives</a>
+            <a href="{% url 'job_list' %}">Jobs</a>
+            <a href="{% url 'login' %}">Login</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Create Your Account</h1>
+        
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn">Sign Up</button>
+            <a href="{% url 'home' %}" class="btn btn-secondary" style="margin-left: 1rem;">Cancel</a>
+        </form>
+
+        <p style="margin-top: 2rem;">
+            Already have an account? <a href="{% url 'login' %}">Log in here</a>
+        </p>
+    </div>
+</body>
+</html>
