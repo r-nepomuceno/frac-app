@@ -2,10 +2,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import ExecutiveProfile, Job
-from .forms import JobForm, ExecutiveProfileForm
+from .models import ExecutiveProfile, Opportunity
+from .forms import OpportunityForm, ExecutiveProfileForm
 import random
-from .matching import calculate_match, find_matching_jobs_for_executive, find_matching_executives_for_job, get_dashboard_matches
+from .matching import calculate_match, find_matching_opportunities_for_executive, find_matching_executives_for_opportunity, get_dashboard_matches
 
 
 # ========== AUTHENTICATION VIEWS ==========
@@ -50,22 +50,22 @@ def logout_view(request):
 def dashboard(request):
     """User dashboard with suggested matches."""
     my_profiles = ExecutiveProfile.objects.filter(owner=request.user)
-    my_jobs = Job.objects.filter(owner=request.user)
+    my_opportunities = Opportunity.objects.filter(owner=request.user)
     
-    # Get all active jobs and profiles for matching
-    all_jobs = Job.objects.filter(is_active=True)
+    # Get all active opportunities and profiles for matching
+    all_opportunities = Opportunity.objects.filter(is_active=True)
     all_executives = ExecutiveProfile.objects.all()
     
     # Get suggested matches
-    matches = get_dashboard_matches(request.user, all_jobs, all_executives)
+    matches = get_dashboard_matches(request.user, all_opportunities, all_executives)
     
     return render(request, "classifieds/dashboard.html", {
         "my_profiles": my_profiles,
-        "my_jobs": my_jobs,
-        "suggested_jobs": matches['suggested_jobs'][:5],  # Top 5
-        "suggested_executives": matches['suggested_executives'][:5],  # Top 5
+        "my_opportunities": my_opportunities,
+        "suggested_opportunities": matches['suggested_opportunities'][:5],
+        "suggested_executives": matches['suggested_executives'][:5],
         "user_has_profile": matches['user_has_profile'],
-        "user_has_jobs": matches['user_has_jobs'],
+        "user_has_opportunities": matches['user_has_opportunities'],
     })
 
 
@@ -93,25 +93,25 @@ def edit_profile(request, pk):
 
 
 @login_required
-def edit_job(request, pk):
-    """Edit a job posting (must be owner)"""
-    job = get_object_or_404(Job, pk=pk)
+def edit_opportunity(request, pk):
+    """Edit an opportunity posting (must be owner)"""
+    opportunity = get_object_or_404(Opportunity, pk=pk)
     
     # Authorization check: only owner can edit
-    if job.owner != request.user:
-        return redirect("job_list")  # Redirect if not owner
+    if opportunity.owner != request.user:
+        return redirect("opportunity_list")  # Redirect if not owner
     
     if request.method == "POST":
-        form = JobForm(request.POST, instance=job)
+        form = OpportunityForm(request.POST, instance=opportunity)
         if form.is_valid():
             form.save()
             return redirect("dashboard")
     else:
-        form = JobForm(instance=job)
+        form = OpportunityForm(instance=opportunity)
     
-    return render(request, "classifieds/edit_job.html", {
+    return render(request, "classifieds/edit_opportunity.html", {
         "form": form,
-        "job": job
+        "opportunity": opportunity
     })
 
 
@@ -139,24 +139,24 @@ def exec_list(request):
 
 
 def exec_detail(request, pk):
-    """Executive detail page with job matching for logged-in users."""
+    """Executive detail page with opportunity matching for logged-in users."""
     exec_profile = get_object_or_404(ExecutiveProfile, pk=pk)
     
     context = {
         'exec': exec_profile,
-        'matching_jobs': [],
+        'matching_opportunities': [],
     }
     
-    # If user is logged in and has job postings, show matches
+    # If user is logged in and has opportunity postings, show matches
     if request.user.is_authenticated:
-        user_jobs = Job.objects.filter(owner=request.user, is_active=True)
-        if user_jobs.exists() and exec_profile.skills_tags:
-            for job in user_jobs:
-                if job.required_skills_tags:
-                    match_info = calculate_match(exec_profile.skills_tags, job.required_skills_tags)
+        user_opportunities = Opportunity.objects.filter(owner=request.user, is_active=True)
+        if user_opportunities.exists() and exec_profile.skills_tags:
+            for opportunity in user_opportunities:
+                if opportunity.required_skills_tags:
+                    match_info = calculate_match(exec_profile.skills_tags, opportunity.required_skills_tags)
                     if match_info['match_count'] > 0:
-                        context['matching_jobs'].append({
-                            'job': job,
+                        context['matching_opportunities'].append({
+                            'opportunity': opportunity,
                             'match_info': match_info,
                         })
     
@@ -179,52 +179,87 @@ def create_profile(request):
     return render(request, "classifieds/create_profile.html", {"form": form})
 
 
-# ========== JOB VIEWS ==========
+# ========== OPPORTUNITY VIEWS ==========
 
-def job_list(request):
-    jobs = Job.objects.order_by("-created_at")
-    return render(request, "classifieds/job_list.html", {"jobs": jobs})
+def opportunity_list(request):
+    opportunities = Opportunity.objects.order_by("-created_at")
+    return render(request, "classifieds/opportunity_list.html", {"opportunities": opportunities})
 
 
-def job_detail(request, pk):
-    """Job detail page with executive matching for logged-in users."""
-    job = get_object_or_404(Job, pk=pk)
+def opportunity_detail(request, pk):
+    """Opportunity detail page with executive matching for logged-in users."""
+    opportunity = get_object_or_404(Opportunity, pk=pk)
     
     context = {
-        'job': job,
+        'opportunity': opportunity,
         'matching_profiles': [],
     }
     
     # If user is logged in and has executive profiles, show matches
     if request.user.is_authenticated:
         user_profiles = ExecutiveProfile.objects.filter(owner=request.user)
-        if user_profiles.exists() and job.required_skills_tags:
+        if user_profiles.exists() and opportunity.required_skills_tags:
             for profile in user_profiles:
                 if profile.skills_tags:
-                    match_info = calculate_match(profile.skills_tags, job.required_skills_tags)
+                    match_info = calculate_match(profile.skills_tags, opportunity.required_skills_tags)
                     if match_info['match_count'] > 0:
                         context['matching_profiles'].append({
                             'profile': profile,
                             'match_info': match_info,
                         })
     
-    return render(request, "classifieds/job_detail.html", context)
+    return render(request, "classifieds/opportunity_detail.html", context)
 
 
 @login_required
-def post_job(request):
-    """Post a new job (LOGIN REQUIRED)"""
+def post_opportunity(request):
+    """Post a new opportunity (LOGIN REQUIRED)"""
     if request.method == "POST":
-        form = JobForm(request.POST)
+        form = OpportunityForm(request.POST)
         if form.is_valid():
-            job = form.save(commit=False)
-            job.owner = request.user  # Assign owner
-            job.save()
-            return redirect("job_list")
+            opportunity = form.save(commit=False)
+            opportunity.owner = request.user  # Assign owner
+            opportunity.save()
+            return redirect("opportunity_list")
     else:
-        form = JobForm()
+        form = OpportunityForm()
 
-    return render(request, "classifieds/post_job.html", {"form": form})
+    return render(request, "classifieds/post_opportunity.html", {"form": form})
+
+
+def redirect_jobs_to_opportunities(request):
+    """Legacy redirect from /jobs/ to /opportunities/"""
+    return redirect("opportunity_list", permanent=True)
+
+
+@login_required
+def delete_profile(request, pk):
+    """Delete an executive profile (must be owner, POST only)"""
+    profile = get_object_or_404(ExecutiveProfile, pk=pk)
+    
+    # Authorization check: only owner can delete
+    if profile.owner != request.user:
+        return redirect("dashboard")
+    
+    if request.method == "POST":
+        profile.delete()
+    
+    return redirect("dashboard")
+
+
+@login_required
+def delete_opportunity(request, pk):
+    """Delete an opportunity (must be owner, POST only)"""
+    opportunity = get_object_or_404(Opportunity, pk=pk)
+    
+    # Authorization check: only owner can delete
+    if opportunity.owner != request.user:
+        return redirect("dashboard")
+    
+    if request.method == "POST":
+        opportunity.delete()
+    
+    return redirect("dashboard")
 
 
 def ab_test(request):
@@ -242,16 +277,12 @@ def ab_test(request):
     # Define variant-specific content
     variants = {
         'A': {
-            'headline': 'Find Your Perfect Fractional Executive',
-            'subheadline': 'Connect with experienced leaders ready to scale your startup',
-            'cta_text': 'Browse Executives',
-            'color': '#667eea',  # Purple
+            'button_text': 'kudos',
+            'color': '#48bb78',  # Green
         },
         'B': {
-            'headline': 'Connect With Top Fractional Talent',
-            'subheadline': 'Discover flexible executive solutions for your growing business',
-            'cta_text': 'Explore Talent',
-            'color': '#48bb78',  # Green
+            'button_text': 'thanks',
+            'color': '#667eea',  # Blue
         }
     }
     

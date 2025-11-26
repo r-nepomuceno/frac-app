@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Executive Profile</title>
+    <title>Post an Opportunity</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}?v=4">
     
     <!-- Google Analytics 4 -->
@@ -47,17 +47,21 @@
             color: #8c8c8c;
             margin-top: 0.25rem;
         }
-        .rate-input-wrapper {
+        .inline-input-wrapper {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        .rate-prefix, .rate-suffix {
+        .inline-prefix {
             font-weight: 500;
             color: #5c5c5c;
         }
-        .rate-input-wrapper input {
-            width: 150px;
+        .inline-input-wrapper input[type="number"] {
+            width: 120px;
+        }
+        .inline-input-wrapper select {
+            width: auto;
+            padding: 0.75rem 1rem;
         }
     </style>
 </head>
@@ -80,59 +84,70 @@
 
     <div class="container">
         <div style="margin-bottom: 1rem;">
-            <a href="{% url 'exec_list' %}" style="color: #5c5c5c;">← Back to Executives</a>
+            <a href="{% url 'opportunity_list' %}" style="color: #5c5c5c;">← Back to Opportunities</a>
         </div>
         
         <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #e0dbd3; max-width: 600px;">
-            <h1 style="margin-bottom: 0.5rem;">Create Your Profile</h1>
-            <p style="color: #5c5c5c; margin-bottom: 2rem;">Share your expertise with startups looking for fractional executive talent.</p>
+            <h1 style="margin-bottom: 0.5rem;">Post an Opportunity</h1>
+            <p style="color: #5c5c5c; margin-bottom: 2rem;">Find the right fractional executive for your team.</p>
             
             <form method="post">
                 {% csrf_token %}
                 
                 <div class="form-group">
-                    <label for="id_name">Full Name</label>
-                    <input type="text" name="name" id="id_name" class="form-input" placeholder="Jane Smith" required maxlength="120">
-                </div>
-                
-                <div class="form-group">
-                    <label for="id_title">Professional Title</label>
+                    <label for="id_title">Opportunity Title</label>
                     <input type="text" name="title" id="id_title" class="form-input" placeholder="Fractional CFO" required maxlength="160">
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_bio">About / Bio</label>
-                    <textarea name="bio" id="id_bio" class="form-input" rows="4" placeholder="Tell us about your background, expertise, and what you bring to the table..."></textarea>
+                    <label for="id_company">Company Name</label>
+                    <input type="text" name="company" id="id_company" class="form-input" placeholder="Acme Corp" required maxlength="160">
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_location">Location</label>
-                    <input type="text" name="location" id="id_location" class="form-input" placeholder="San Francisco, CA" maxlength="100">
-                    <p class="form-help">City, State/Region</p>
+                    <label for="id_description">Description</label>
+                    <textarea name="description" id="id_description" class="form-input" rows="4" placeholder="Describe the role, responsibilities, and what you're looking for..." required></textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_hourly_rate">Hourly Rate</label>
-                    <div class="rate-input-wrapper">
-                        <span class="rate-prefix">$</span>
-                        <input type="number" name="hourly_rate" id="id_hourly_rate" class="form-input" placeholder="250" min="0">
-                        <span class="rate-suffix">/ hour</span>
+                    <label>Budget</label>
+                    <div class="inline-input-wrapper">
+                        <span class="inline-prefix">$</span>
+                        <input type="number" name="budget_amount" id="id_budget_amount" class="form-input" placeholder="10000" min="0">
+                        <select name="budget_period" id="id_budget_period" class="form-input">
+                            <option value="hour">per hour</option>
+                            <option value="day">per day</option>
+                            <option value="week">per week</option>
+                            <option value="month" selected>per month</option>
+                        </select>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_skills_tags">Skills</label>
-                    <input type="text" name="skills_tags" id="id_skills_tags" class="form-input" placeholder="finance, strategy, fundraising, operations" maxlength="500">
-                    <p class="form-help">Comma-separated skills for matching with opportunities</p>
+                    <label>Duration</label>
+                    <div class="inline-input-wrapper">
+                        <input type="number" name="duration_amount" id="id_duration_amount" class="form-input" placeholder="3" min="0">
+                        <select name="duration_period" id="id_duration_period" class="form-input">
+                            <option value="days">days</option>
+                            <option value="weeks">weeks</option>
+                            <option value="months" selected>months</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_email">Contact Email</label>
-                    <input type="email" name="email" id="id_email" class="form-input" placeholder="jane@example.com" required>
+                    <label for="id_required_skills_tags">Required Skills</label>
+                    <input type="text" name="required_skills_tags" id="id_required_skills_tags" class="form-input" placeholder="finance, strategy, fundraising" maxlength="500">
+                    <p class="form-help">Comma-separated skills for matching with executives</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_contact_email">Contact Email</label>
+                    <input type="email" name="contact_email" id="id_contact_email" class="form-input" placeholder="hiring@acmecorp.com" required>
                 </div>
                 
                 <div style="margin-top: 2rem;">
-                    <button type="submit" class="btn">Create Profile</button>
+                    <button type="submit" class="btn">Post Opportunity</button>
                 </div>
             </form>
         </div>

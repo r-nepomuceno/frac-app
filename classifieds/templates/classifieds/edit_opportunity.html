@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Profile</title>
+    <title>Edit Opportunity</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}?v=4">
     
     <!-- Google Analytics 4 -->
@@ -47,17 +47,21 @@
             color: #8c8c8c;
             margin-top: 0.25rem;
         }
-        .rate-input-wrapper {
+        .inline-input-wrapper {
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
-        .rate-prefix, .rate-suffix {
+        .inline-prefix {
             font-weight: 500;
             color: #5c5c5c;
         }
-        .rate-input-wrapper input {
-            width: 150px;
+        .inline-input-wrapper input[type="number"] {
+            width: 120px;
+        }
+        .inline-input-wrapper select {
+            width: auto;
+            padding: 0.75rem 1rem;
         }
         .danger-zone {
             margin-top: 3rem;
@@ -110,51 +114,62 @@
         </div>
         
         <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #e0dbd3; max-width: 600px;">
-            <h1 style="margin-bottom: 0.5rem;">Edit Profile</h1>
-            <p style="color: #5c5c5c; margin-bottom: 2rem;">Update your executive profile.</p>
+            <h1 style="margin-bottom: 0.5rem;">Edit Opportunity</h1>
+            <p style="color: #5c5c5c; margin-bottom: 2rem;">Update your opportunity posting.</p>
             
             <form method="post">
                 {% csrf_token %}
                 
                 <div class="form-group">
-                    <label for="id_name">Full Name</label>
-                    <input type="text" name="name" id="id_name" class="form-input" value="{{ profile.name }}" required maxlength="120">
+                    <label for="id_title">Opportunity Title</label>
+                    <input type="text" name="title" id="id_title" class="form-input" value="{{ opportunity.title }}" required maxlength="160">
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_title">Professional Title</label>
-                    <input type="text" name="title" id="id_title" class="form-input" value="{{ profile.title }}" required maxlength="160">
+                    <label for="id_company">Company Name</label>
+                    <input type="text" name="company" id="id_company" class="form-input" value="{{ opportunity.company }}" required maxlength="160">
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_bio">About / Bio</label>
-                    <textarea name="bio" id="id_bio" class="form-input" rows="4">{{ profile.bio }}</textarea>
+                    <label for="id_description">Description</label>
+                    <textarea name="description" id="id_description" class="form-input" rows="4" required>{{ opportunity.description }}</textarea>
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_location">Location</label>
-                    <input type="text" name="location" id="id_location" class="form-input" value="{{ profile.location }}" maxlength="100">
-                    <p class="form-help">City, State/Region</p>
-                </div>
-                
-                <div class="form-group">
-                    <label for="id_hourly_rate">Hourly Rate</label>
-                    <div class="rate-input-wrapper">
-                        <span class="rate-prefix">$</span>
-                        <input type="number" name="hourly_rate" id="id_hourly_rate" class="form-input" value="{{ profile.hourly_rate|default:'' }}" min="0">
-                        <span class="rate-suffix">/ hour</span>
+                    <label>Budget</label>
+                    <div class="inline-input-wrapper">
+                        <span class="inline-prefix">$</span>
+                        <input type="number" name="budget_amount" id="id_budget_amount" class="form-input" value="{{ opportunity.budget_amount|default:'' }}" min="0">
+                        <select name="budget_period" id="id_budget_period" class="form-input">
+                            <option value="hour" {% if opportunity.budget_period == 'hour' %}selected{% endif %}>per hour</option>
+                            <option value="day" {% if opportunity.budget_period == 'day' %}selected{% endif %}>per day</option>
+                            <option value="week" {% if opportunity.budget_period == 'week' %}selected{% endif %}>per week</option>
+                            <option value="month" {% if opportunity.budget_period == 'month' %}selected{% endif %}>per month</option>
+                        </select>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_skills_tags">Skills</label>
-                    <input type="text" name="skills_tags" id="id_skills_tags" class="form-input" value="{{ profile.skills_tags }}" maxlength="500">
-                    <p class="form-help">Comma-separated skills for matching with opportunities</p>
+                    <label>Duration</label>
+                    <div class="inline-input-wrapper">
+                        <input type="number" name="duration_amount" id="id_duration_amount" class="form-input" value="{{ opportunity.duration_amount|default:'' }}" min="0">
+                        <select name="duration_period" id="id_duration_period" class="form-input">
+                            <option value="days" {% if opportunity.duration_period == 'days' %}selected{% endif %}>days</option>
+                            <option value="weeks" {% if opportunity.duration_period == 'weeks' %}selected{% endif %}>weeks</option>
+                            <option value="months" {% if opportunity.duration_period == 'months' %}selected{% endif %}>months</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="id_email">Contact Email</label>
-                    <input type="email" name="email" id="id_email" class="form-input" value="{{ profile.email }}" required>
+                    <label for="id_required_skills_tags">Required Skills</label>
+                    <input type="text" name="required_skills_tags" id="id_required_skills_tags" class="form-input" value="{{ opportunity.required_skills_tags }}" maxlength="500">
+                    <p class="form-help">Comma-separated skills for matching with executives</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_contact_email">Contact Email</label>
+                    <input type="email" name="contact_email" id="id_contact_email" class="form-input" value="{{ opportunity.contact_email }}" required>
                 </div>
                 
                 <div style="margin-top: 2rem; display: flex; gap: 1rem;">
@@ -165,10 +180,10 @@
             
             <!-- Danger Zone -->
             <div class="danger-zone">
-                <p>Permanently delete this profile. This action cannot be undone.</p>
-                <form method="post" action="{% url 'delete_profile' profile.pk %}" onsubmit="return confirm('Are you sure you want to delete this profile? This action cannot be undone.');">
+                <p>Permanently delete this opportunity. This action cannot be undone.</p>
+                <form method="post" action="{% url 'delete_opportunity' opportunity.pk %}" onsubmit="return confirm('Are you sure you want to delete this opportunity? This action cannot be undone.');">
                     {% csrf_token %}
-                    <button type="submit" class="btn-delete">Delete Profile</button>
+                    <button type="submit" class="btn-delete">Delete Opportunity</button>
                 </form>
             </div>
         </div>

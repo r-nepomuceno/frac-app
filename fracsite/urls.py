@@ -32,6 +32,13 @@ urlpatterns = [
     # Executives
     path("executives/", include("classifieds.urls")),
 
-    # Jobs
-    path("jobs/", include("classifieds.job_urls")),
+    # Opportunities (renamed from Jobs)
+    path("opportunities/", include("classifieds.opportunity_urls")),
+    
+    # Delete actions
+    path("profile/<int:pk>/delete/", views.delete_profile, name="delete_profile"),
+    path("opportunity/<int:pk>/delete/", views.delete_opportunity, name="delete_opportunity"),
+    
+    # Legacy redirect: /jobs/ -> /opportunities/
+    path("jobs/", views.redirect_jobs_to_opportunities, name="jobs_redirect"),
 ]

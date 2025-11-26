@@ -21,7 +21,7 @@
         <div class="container">
             <a href="{% url 'home' %}" style="font-weight: 600; margin-right: 1rem;">Frac</a>
             <a href="{% url 'exec_list' %}">Executives</a>
-            <a href="{% url 'job_list' %}">Opportunities</a>
+            <a href="{% url 'opportunity_list' %}">Opportunities</a>
             
             {% if user.is_authenticated %}
                 <a href="{% url 'dashboard' %}">Dashboard</a>
@@ -35,7 +35,7 @@
 
     <div class="hero-section">
         <h1>Find the leadership<br>your startup needs</h1>
-        <p>Access experienced executives on a fractional basis. Get strategic guidance without the full-time commitment or cost.</p>
+        <p>Access experienced fractional executives on a flexible basis. Get strategic guidance without the full-time commitment or cost.</p>
     </div>
 
     <div class="container">
@@ -50,7 +50,7 @@
                 <h3>Post an Opportunity</h3>
                 <p>Describe your needs and let qualified executives find you. Get matched based on skills and experience.</p>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'post_job' %}" class="btn">Post Job →</a>
+                    <a href="{% url 'post_opportunity' %}" class="btn">Post Opportunity →</a>
                 {% else %}
                     <a href="{% url 'signup' %}" class="btn">Sign Up to Post →</a>
                 {% endif %}

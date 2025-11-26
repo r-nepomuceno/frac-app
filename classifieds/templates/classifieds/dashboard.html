@@ -77,6 +77,13 @@
             background: rgba(138, 138, 173, 0.3);
             color: var(--text-primary, #1a1a1a);
         }
+        
+        .card-actions {
+            margin-top: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
@@ -84,7 +91,7 @@
         <div class="container">
             <a href="{% url 'home' %}" style="font-weight: 600; margin-right: 1rem;">Frac</a>
             <a href="{% url 'exec_list' %}">Executives</a>
-            <a href="{% url 'job_list' %}">Jobs</a>
+            <a href="{% url 'opportunity_list' %}">Opportunities</a>
             <a href="{% url 'dashboard' %}">Dashboard</a>
             <a href="{% url 'logout' %}">Logout</a>
         </div>
@@ -94,19 +101,19 @@
         <h1>My Dashboard</h1>
         <p>Welcome back, <strong>{{ user.username }}</strong>!</p>
 
-        <!-- Suggested Jobs Section (for executives) - Sage Green -->
-        {% if suggested_jobs %}
+        <!-- Suggested Opportunities Section (for executives) - Sage Green -->
+        {% if suggested_opportunities %}
             <div class="suggestions-section">
-                <h2>🎯 Jobs Matching Your Skills</h2>
+                <h2>🎯 Opportunities Matching Your Skills</h2>
                 <div class="card-grid">
-                    {% for item in suggested_jobs %}
-                        <div class="card card-clickable" onclick="window.location='{% url 'job_detail' item.job.pk %}'">
+                    {% for item in suggested_opportunities %}
+                        <div class="card card-clickable" onclick="window.location='{% url 'opportunity_detail' item.opportunity.pk %}'">
                             <span class="match-badge">{{ item.match_info.match_count }} skills match</span>
-                            {% if item.job.budget_text %}
-                                <span class="card-rate">{{ item.job.budget_text }}</span>
+                            {% if item.opportunity.budget_display %}
+                                <span class="card-rate">{{ item.opportunity.budget_display }}</span>
                             {% endif %}
-                            <h2 style="margin-top: 0.5rem;">{{ item.job.title }}</h2>
-                            <p><strong>{{ item.job.company }}</strong></p>
+                            <h2 style="margin-top: 0.5rem;">{{ item.opportunity.title }}</h2>
+                            <p><strong>{{ item.opportunity.company }}</strong></p>
                             <div class="tags-container">
                                 {% for tag in item.match_info.matching_tags %}
                                     <span class="tag-badge">{{ tag }}</span>
@@ -121,17 +128,17 @@
         <!-- Suggested Executives Section (for startups) - Lavender -->
         {% if suggested_executives %}
             <div class="suggestions-section for-startups">
-                <h2>🎯 Executives Matching Your Job Requirements</h2>
+                <h2>🎯 Executives Matching Your Requirements</h2>
                 <div class="card-grid">
                     {% for item in suggested_executives %}
                         <div class="card card-clickable" onclick="window.location='{% url 'exec_detail' item.executive.pk %}'">
                             <span class="match-badge">{{ item.match_info.match_count }} skills match</span>
-                            {% if item.executive.rate_text %}
-                                <span class="card-rate">{{ item.executive.rate_text }}</span>
+                            {% if item.executive.rate_display %}
+                                <span class="card-rate">{{ item.executive.rate_display }}</span>
                             {% endif %}
                             <h2 style="margin-top: 0.5rem;">{{ item.executive.name }}</h2>
                             <p><strong>{{ item.executive.title }}</strong></p>
-                            <p style="font-size: 0.85rem; color: var(--text-muted, #8c8c8c);">For: {{ item.job.title }}</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted, #8c8c8c);">For: {{ item.opportunity.title }}</p>
                             <div class="tags-container">
                                 {% for tag in item.match_info.matching_tags %}
                                     <span class="tag-badge">{{ tag }}</span>
@@ -154,13 +161,13 @@
                 <div class="card-grid">
                     {% for profile in my_profiles %}
                         <div class="card">
-                            {% if profile.rate_text %}
-                                <span class="card-rate">{{ profile.rate_text }}</span>
+                            {% if profile.rate_display %}
+                                <span class="card-rate">{{ profile.rate_display }}</span>
                             {% endif %}
                             <h2>{{ profile.name }}</h2>
                             <p><strong>{{ profile.title }}</strong></p>
-                            {% if profile.skills_text %}
-                                <p>{{ profile.skills_text }}</p>
+                            {% if profile.location %}
+                                <p style="font-size: 0.85rem; color: var(--text-muted);">{{ profile.location }}</p>
                             {% endif %}
                             
                             {% with tags=profile.get_tags_list %}
@@ -173,7 +180,7 @@
                                 {% endif %}
                             {% endwith %}
                             
-                            <div style="margin-top: 1rem;">
+                            <div class="card-actions">
                                 <a href="{% url 'edit_profile' profile.pk %}" class="btn">Edit</a>
                                 <a href="{% url 'exec_detail' profile.pk %}" class="btn btn-secondary">View</a>
                             </div>
@@ -188,27 +195,27 @@
             {% endif %}
         </div>
 
-        <!-- Job Postings Section -->
+        <!-- Opportunities Section -->
         <div style="margin-top: 3rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                <h2>My Job Postings</h2>
-                <a href="{% url 'post_job' %}" class="btn">Post New Job</a>
+                <h2>My Opportunities</h2>
+                <a href="{% url 'post_opportunity' %}" class="btn">Post New Opportunity</a>
             </div>
 
-            {% if my_jobs %}
+            {% if my_opportunities %}
                 <div class="card-grid">
-                    {% for job in my_jobs %}
+                    {% for opportunity in my_opportunities %}
                         <div class="card">
-                            {% if job.budget_text %}
-                                <span class="card-rate">{{ job.budget_text }}</span>
+                            {% if opportunity.budget_display %}
+                                <span class="card-rate">{{ opportunity.budget_display }}</span>
                             {% endif %}
-                            <h2>{{ job.title }}</h2>
-                            <p><strong>{{ job.company }}</strong></p>
-                            {% if job.duration_text %}
-                                <span class="card-label">{{ job.duration_text }}</span>
+                            <h2>{{ opportunity.title }}</h2>
+                            <p><strong>{{ opportunity.company }}</strong></p>
+                            {% if opportunity.duration_display %}
+                                <span class="card-label">{{ opportunity.duration_display }}</span>
                             {% endif %}
                             
-                            {% with tags=job.get_tags_list %}
+                            {% with tags=opportunity.get_tags_list %}
                                 {% if tags %}
                                     <div class="tags-container">
                                         {% for tag in tags %}
@@ -218,17 +225,17 @@
                                 {% endif %}
                             {% endwith %}
                             
-                            <div style="margin-top: 1rem;">
-                                <a href="{% url 'edit_job' job.pk %}" class="btn">Edit</a>
-                                <a href="{% url 'job_detail' job.pk %}" class="btn btn-secondary">View</a>
+                            <div class="card-actions">
+                                <a href="{% url 'edit_opportunity' opportunity.pk %}" class="btn">Edit</a>
+                                <a href="{% url 'opportunity_detail' opportunity.pk %}" class="btn btn-secondary">View</a>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
             {% else %}
                 <div class="empty-state">
-                    <p>You haven't posted any jobs yet.</p>
-                    <a href="{% url 'post_job' %}" class="btn">Post Your First Job</a>
+                    <p>You haven't posted any opportunities yet.</p>
+                    <a href="{% url 'post_opportunity' %}" class="btn">Post Your First Opportunity</a>
                 </div>
             {% endif %}
         </div>

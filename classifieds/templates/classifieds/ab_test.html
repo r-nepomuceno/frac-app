@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A/B Test - restless-sound</title>
+    <title>A/B Test - Frac</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}?v=4">
     
     <!-- Google Analytics 4 -->
@@ -14,111 +14,73 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-94TQ21MWZ6');
-      
-      // Track A/B variant shown
-      gtag('event', 'ab_test_view', {
-        'variant': '{{ variant }}',
-        'team': 'restless-sound'
-      });
     </script>
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'home' %}" style="font-weight: 600; margin-right: 1rem;">Frac</a>
             <a href="{% url 'exec_list' %}">Executives</a>
-            <a href="{% url 'job_list' %}">Jobs</a>
+            <a href="{% url 'opportunity_list' %}">Opportunities</a>
             
             {% if user.is_authenticated %}
                 <a href="{% url 'dashboard' %}">Dashboard</a>
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
+                <a href="{% url 'signup' %}" class="btn" style="margin-left: auto;">Sign Up</a>
             {% endif %}
         </div>
     </nav>
 
-    <div class="container" style="margin-top: 4rem; text-align: center;">
-        <!-- Team Info -->
-        <div style="max-width: 600px; margin: 0 auto;">
-            <h1>Team: restless-sound</h1>
+    <div class="container" style="text-align: center; padding: 4rem 1rem;">
+        <h1>A/B Test Page</h1>
+        <p style="color: #5c5c5c; margin-bottom: 2rem;">You are seeing <strong>Variant {{ variant }}</strong></p>
+        
+        <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #e0dbd3; max-width: 400px; margin: 0 auto;">
+            <p style="margin-bottom: 1.5rem;">Click the button below to interact:</p>
             
-            <!-- Team Member Nicknames -->
-            <div style="margin: 2rem 0; padding: 2rem; background: #f7fafc; border-radius: 12px;">
-                <h2 style="margin-bottom: 1rem;">Team Members</h2>
-                <ul style="list-style: none; padding: 0; font-size: 1.25rem; line-height: 2;">
-                    <li>Dylan Safyer, Henry Melzner, Joseph Dobson, Robby Nepomuceno, Wit Wattananimitgul</li>
-                    <!-- Add more team member nicknames here if needed -->
-                </ul>
-            </div>
+            <button 
+                id="ab-test-button"
+                onclick="handleClick()"
+                style="
+                    padding: 1rem 2rem;
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    background: {{ content.color }};
+                    color: white;
+                    transition: opacity 0.15s ease;
+                "
+                onmouseover="this.style.opacity='0.9'"
+                onmouseout="this.style.opacity='1'"
+            >
+                {{ content.button_text }}
+            </button>
             
-            <!-- A/B Test Variant Display -->
-            <div style="margin: 2rem 0; padding: 1rem; background: {% if variant == 'A' %}#f0fff4{% else %}#ebf8ff{% endif %}; border-radius: 8px;">
-                <p style="margin-bottom: 0.5rem; color: #718096;">Current Variant:</p>
-                <p style="font-size: 1.5rem; font-weight: 600; color: {% if variant == 'A' %}#276749{% else %}#2b6cb0{% endif %};">
-                    Variant {{ variant }}
-                </p>
-            </div>
-            
-            <!-- A/B Test Button (REQUIRED: id="abtest") -->
-            <div style="margin: 3rem 0;">
-                {% if variant == 'A' %}
-                    <button id="abtest" onclick="trackButtonClick('kudos')" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; font-size: 1.5rem; font-weight: 600; padding: 1rem 3rem; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.2s;">
-                        kudos
-                    </button>
-                {% else %}
-                    <button id="abtest" onclick="trackButtonClick('thanks')" style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); color: white; font-size: 1.5rem; font-weight: 600; padding: 1rem 3rem; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.2s;">
-                        thanks
-                    </button>
-                {% endif %}
-            </div>
-            
-            <!-- Technical Info -->
-            <div style="margin-top: 3rem; padding: 1.5rem; background: #f7fafc; border-radius: 12px; text-align: left;">
-                <h3 style="margin-bottom: 1rem;">A/B Test Details</h3>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td style="padding: 0.5rem 0; color: #718096;">Endpoint:</td>
-                        <td style="padding: 0.5rem 0; font-weight: 500;">/b77952e</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.5rem 0; color: #718096;">Team:</td>
-                        <td style="padding: 0.5rem 0; font-weight: 500;">restless-sound</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.5rem 0; color: #718096;">Variant:</td>
-                        <td style="padding: 0.5rem 0; font-weight: 500;">{{ variant }}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 0.5rem 0; color: #718096;">Button Text:</td>
-                        <td style="padding: 0.5rem 0; font-weight: 500;">{% if variant == 'A' %}kudos{% else %}thanks{% endif %}</td>
-                    </tr>
-                </table>
-            </div>
+            <p id="click-feedback" style="margin-top: 1.5rem; color: #5c5c5c; display: none;">
+                Thanks for clicking!
+            </p>
         </div>
+        
+        <p style="margin-top: 2rem; font-size: 0.85rem; color: #8c8c8c;">
+            Variant assignment is stored in your session.
+        </p>
     </div>
     
     <script>
-        // Track button clicks in Google Analytics
-        function trackButtonClick(buttonText) {
+        function handleClick() {
+            // Track the click event in GA4
             gtag('event', 'ab_test_click', {
                 'variant': '{{ variant }}',
-                'button_text': buttonText,
-                'team': 'restless-sound'
+                'button_text': '{{ content.button_text }}'
             });
             
-            // Visual feedback
-            alert('Button clicked! Variant {{ variant }} - ' + buttonText);
+            // Show feedback
+            document.getElementById('click-feedback').style.display = 'block';
         }
-        
-        // Hover effect for button
-        document.getElementById('abtest').addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.05)';
-        });
-        document.getElementById('abtest').addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-        });
     </script>
 </body>
 </html>
