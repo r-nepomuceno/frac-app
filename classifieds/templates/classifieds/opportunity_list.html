@@ -18,32 +18,6 @@
     
     <style>
         a { text-decoration: none !important; }
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-top: 0.75rem;
-        }
-        .tag-badge {
-            display: inline-block;
-            background: #ebe5db;
-            color: #5c5c5c;
-            font-size: 0.7rem;
-            font-weight: 500;
-            padding: 0.25rem 0.6rem;
-            border-radius: 4px;
-            text-transform: lowercase;
-        }
-        .card-label {
-            display: inline-block;
-            background: #f5f0e8;
-            color: #5c5c5c;
-            font-size: 0.75rem;
-            font-weight: 500;
-            padding: 0.25rem 0.6rem;
-            border-radius: 4px;
-            margin-top: 0.5rem;
-        }
         .card-clickable { cursor: pointer; }
     </style>
 </head>
@@ -78,23 +52,26 @@
             <div class="card-grid">
                 {% for opportunity in opportunities %}
                     <div class="card card-clickable" onclick="window.location='{% url 'opportunity_detail' opportunity.pk %}'">
-                        {% if opportunity.budget_display %}
-                            <span class="card-rate">{{ opportunity.budget_display }}</span>
-                        {% endif %}
-                        <h2>{{ opportunity.title }}</h2>
-                        <p><strong>{{ opportunity.company }}</strong></p>
+                        <h2 style="margin: 0 0 0.25rem 0;">{{ opportunity.title }}</h2>
+                        <p style="margin: 0 0 0.5rem 0;"><strong>{{ opportunity.company }}</strong></p>
                         {% if opportunity.description %}
-                            <p style="font-size: 0.9rem; color: #5c5c5c;">{{ opportunity.description|truncatewords:20 }}</p>
+                            <p style="font-size: 0.9rem; color: #5c5c5c; margin: 0;">{{ opportunity.description|truncatewords:20 }}</p>
                         {% endif %}
-                        {% if opportunity.duration_display %}
-                            <span class="card-label">{{ opportunity.duration_display }}</span>
+                        {% if opportunity.budget_display or opportunity.duration_display %}
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;">
+                                {% if opportunity.budget_display %}
+                                    <span style="display: inline-block; background: #1a1a1a; color: white; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px;">{{ opportunity.budget_display }}</span>
+                                {% endif %}
+                                {% if opportunity.duration_display %}
+                                    <span style="display: inline-block; background: #f5f0e8; color: #5c5c5c; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px;">{{ opportunity.duration_display }}</span>
+                                {% endif %}
+                            </div>
                         {% endif %}
-                        
                         {% with tags=opportunity.get_tags_list %}
                             {% if tags %}
-                                <div class="tags-container">
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem;">
                                     {% for tag in tags %}
-                                        <span class="tag-badge">{{ tag }}</span>
+                                        <span style="display: inline-block; background: #ebe5db; color: #5c5c5c; font-size: 0.7rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px; text-transform: lowercase;">{{ tag }}</span>
                                     {% endfor %}
                                 </div>
                             {% endif %}

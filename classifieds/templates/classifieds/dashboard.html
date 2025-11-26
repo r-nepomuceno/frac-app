@@ -18,71 +18,24 @@
     
     <style>
         a { text-decoration: none !important; }
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-top: 0.5rem;
-        }
-        .tag-badge {
-            display: inline-block;
-            background: var(--bg-accent-tan, #ebe5db);
-            color: var(--text-secondary, #5c5c5c);
-            font-size: 0.7rem;
-            font-weight: 500;
-            padding: 0.25rem 0.6rem;
-            border-radius: 4px;
-            text-transform: lowercase;
-        }
-        .match-badge {
-            display: inline-block;
-            background: var(--text-primary, #1a1a1a);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.3rem 0.6rem;
-            border-radius: 4px;
-        }
-        .card-clickable {
-            cursor: pointer;
-        }
+        .card-clickable { cursor: pointer; }
         
-        /* Suggestions sections with Anthropic colors */
         .suggestions-section {
-            background: var(--bg-accent-green, #e8efe8);
+            background: #e8efe8;
             border: none;
             border-radius: 12px;
             padding: 1.5rem;
             margin-top: 2rem;
         }
         .suggestions-section.for-startups {
-            background: var(--bg-accent-blue, #e8eaef);
+            background: #e8eaef;
         }
         .suggestions-section h2 {
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--text-primary, #1a1a1a);
-        }
-        
-        /* Match tags in green section */
-        .suggestions-section .tag-badge {
-            background: rgba(122, 154, 122, 0.3);
-            color: var(--text-primary, #1a1a1a);
-        }
-        
-        /* Match tags in blue/lavender section */
-        .suggestions-section.for-startups .tag-badge {
-            background: rgba(138, 138, 173, 0.3);
-            color: var(--text-primary, #1a1a1a);
-        }
-        
-        .card-actions {
-            margin-top: 1rem;
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+            color: #1a1a1a;
         }
     </style>
 </head>
@@ -108,15 +61,24 @@
                 <div class="card-grid">
                     {% for item in suggested_opportunities %}
                         <div class="card card-clickable" onclick="window.location='{% url 'opportunity_detail' item.opportunity.pk %}'">
-                            <span class="match-badge">{{ item.match_info.match_count }} skills match</span>
-                            {% if item.opportunity.budget_display %}
-                                <span class="card-rate">{{ item.opportunity.budget_display }}</span>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span style="display: inline-block; background: #1a1a1a; color: white; font-size: 0.7rem; font-weight: 600; padding: 0.3rem 0.6rem; border-radius: 4px;">{{ item.match_info.match_count }} skills match</span>
+                            </div>
+                            <h2 style="margin: 0 0 0.25rem 0;">{{ item.opportunity.title }}</h2>
+                            <p style="margin: 0 0 0.5rem 0;"><strong>{{ item.opportunity.company }}</strong></p>
+                            {% if item.opportunity.budget_display or item.opportunity.duration_display %}
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                                    {% if item.opportunity.budget_display %}
+                                        <span style="display: inline-block; background: #1a1a1a; color: white; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px;">{{ item.opportunity.budget_display }}</span>
+                                    {% endif %}
+                                    {% if item.opportunity.duration_display %}
+                                        <span style="display: inline-block; background: #f5f0e8; color: #5c5c5c; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px;">{{ item.opportunity.duration_display }}</span>
+                                    {% endif %}
+                                </div>
                             {% endif %}
-                            <h2 style="margin-top: 0.5rem;">{{ item.opportunity.title }}</h2>
-                            <p><strong>{{ item.opportunity.company }}</strong></p>
-                            <div class="tags-container">
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem;">
                                 {% for tag in item.match_info.matching_tags %}
-                                    <span class="tag-badge">{{ tag }}</span>
+                                    <span style="display: inline-block; background: rgba(122, 154, 122, 0.3); color: #1a1a1a; font-size: 0.7rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px; text-transform: lowercase;">{{ tag }}</span>
                                 {% endfor %}
                             </div>
                         </div>
@@ -132,16 +94,20 @@
                 <div class="card-grid">
                     {% for item in suggested_executives %}
                         <div class="card card-clickable" onclick="window.location='{% url 'exec_detail' item.executive.pk %}'">
-                            <span class="match-badge">{{ item.match_info.match_count }} skills match</span>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span style="display: inline-block; background: #1a1a1a; color: white; font-size: 0.7rem; font-weight: 600; padding: 0.3rem 0.6rem; border-radius: 4px;">{{ item.match_info.match_count }} skills match</span>
+                            </div>
+                            <h2 style="margin: 0 0 0.25rem 0;">{{ item.executive.name }}</h2>
+                            <p style="margin: 0 0 0.25rem 0;"><strong>{{ item.executive.title }}</strong></p>
+                            <p style="font-size: 0.85rem; color: #8c8c8c; margin: 0 0 0.5rem 0;">For: {{ item.opportunity.title }}</p>
                             {% if item.executive.rate_display %}
-                                <span class="card-rate">{{ item.executive.rate_display }}</span>
+                                <div style="margin-top: 0.5rem;">
+                                    <span style="display: inline-block; background: #1a1a1a; color: white; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px;">{{ item.executive.rate_display }}</span>
+                                </div>
                             {% endif %}
-                            <h2 style="margin-top: 0.5rem;">{{ item.executive.name }}</h2>
-                            <p><strong>{{ item.executive.title }}</strong></p>
-                            <p style="font-size: 0.85rem; color: var(--text-muted, #8c8c8c);">For: {{ item.opportunity.title }}</p>
-                            <div class="tags-container">
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem;">
                                 {% for tag in item.match_info.matching_tags %}
-                                    <span class="tag-badge">{{ tag }}</span>
+                                    <span style="display: inline-block; background: rgba(138, 138, 173, 0.3); color: #1a1a1a; font-size: 0.7rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px; text-transform: lowercase;">{{ tag }}</span>
                                 {% endfor %}
                             </div>
                         </div>
@@ -161,26 +127,26 @@
                 <div class="card-grid">
                     {% for profile in my_profiles %}
                         <div class="card">
-                            {% if profile.rate_display %}
-                                <span class="card-rate">{{ profile.rate_display }}</span>
-                            {% endif %}
-                            <h2>{{ profile.name }}</h2>
-                            <p><strong>{{ profile.title }}</strong></p>
+                            <h2 style="margin: 0 0 0.25rem 0;">{{ profile.name }}</h2>
+                            <p style="margin: 0 0 0.5rem 0;"><strong>{{ profile.title }}</strong></p>
                             {% if profile.location %}
-                                <p style="font-size: 0.85rem; color: var(--text-muted);">{{ profile.location }}</p>
+                                <p style="font-size: 0.85rem; color: #8c8c8c; margin: 0 0 0.5rem 0;">{{ profile.location }}</p>
                             {% endif %}
-                            
+                            {% if profile.rate_display %}
+                                <div style="margin-top: 0.5rem;">
+                                    <span style="display: inline-block; background: #1a1a1a; color: white; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px;">{{ profile.rate_display }}</span>
+                                </div>
+                            {% endif %}
                             {% with tags=profile.get_tags_list %}
                                 {% if tags %}
-                                    <div class="tags-container">
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem;">
                                         {% for tag in tags %}
-                                            <span class="tag-badge">{{ tag }}</span>
+                                            <span style="display: inline-block; background: #ebe5db; color: #5c5c5c; font-size: 0.7rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px; text-transform: lowercase;">{{ tag }}</span>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
                             {% endwith %}
-                            
-                            <div class="card-actions">
+                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
                                 <a href="{% url 'edit_profile' profile.pk %}" class="btn">Edit</a>
                                 <a href="{% url 'exec_detail' profile.pk %}" class="btn btn-secondary">View</a>
                             </div>
@@ -206,26 +172,28 @@
                 <div class="card-grid">
                     {% for opportunity in my_opportunities %}
                         <div class="card">
-                            {% if opportunity.budget_display %}
-                                <span class="card-rate">{{ opportunity.budget_display }}</span>
+                            <h2 style="margin: 0 0 0.25rem 0;">{{ opportunity.title }}</h2>
+                            <p style="margin: 0 0 0.5rem 0;"><strong>{{ opportunity.company }}</strong></p>
+                            {% if opportunity.budget_display or opportunity.duration_display %}
+                                <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
+                                    {% if opportunity.budget_display %}
+                                        <span style="display: inline-block; background: #1a1a1a; color: white; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px;">{{ opportunity.budget_display }}</span>
+                                    {% endif %}
+                                    {% if opportunity.duration_display %}
+                                        <span style="display: inline-block; background: #f5f0e8; color: #5c5c5c; font-size: 0.75rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px;">{{ opportunity.duration_display }}</span>
+                                    {% endif %}
+                                </div>
                             {% endif %}
-                            <h2>{{ opportunity.title }}</h2>
-                            <p><strong>{{ opportunity.company }}</strong></p>
-                            {% if opportunity.duration_display %}
-                                <span class="card-label">{{ opportunity.duration_display }}</span>
-                            {% endif %}
-                            
                             {% with tags=opportunity.get_tags_list %}
                                 {% if tags %}
-                                    <div class="tags-container">
+                                    <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem;">
                                         {% for tag in tags %}
-                                            <span class="tag-badge">{{ tag }}</span>
+                                            <span style="display: inline-block; background: #ebe5db; color: #5c5c5c; font-size: 0.7rem; font-weight: 500; padding: 0.25rem 0.6rem; border-radius: 4px; text-transform: lowercase;">{{ tag }}</span>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
                             {% endwith %}
-                            
-                            <div class="card-actions">
+                            <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
                                 <a href="{% url 'edit_opportunity' opportunity.pk %}" class="btn">Edit</a>
                                 <a href="{% url 'opportunity_detail' opportunity.pk %}" class="btn btn-secondary">View</a>
                             </div>
