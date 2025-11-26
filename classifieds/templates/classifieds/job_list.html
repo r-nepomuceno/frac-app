@@ -6,6 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Jobs</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    <style>
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1rem;
+        }
+        .tag-badge {
+            display: inline-block;
+            background: #f0f4ff;
+            color: #5a67d8;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            border: 1px solid #c3dafe;
+            text-transform: lowercase;
+            white-space: nowrap;
+        }
+        .card-clickable {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -29,10 +52,8 @@
             <h1>Fractional Opportunities</h1>
             
             {% if user.is_authenticated %}
-                <!-- Logged IN: Show post button -->
                 <a href="{% url 'post_job' %}" class="btn">Post an Opportunity</a>
             {% else %}
-                <!-- Logged OUT: Show sign up CTA -->
                 <a href="{% url 'signup' %}" class="btn">Sign Up to Post Job</a>
             {% endif %}
         </div>
@@ -40,19 +61,29 @@
         {% if jobs %}
             <div class="card-grid">
                 {% for job in jobs %}
-                    <a href="{% url 'job_detail' job.pk %}" class="card">
+                    <div class="card card-clickable" onclick="window.location='{% url 'job_detail' job.pk %}'">
                         {% if job.budget_text %}
                             <span class="card-rate">{{ job.budget_text }}</span>
                         {% endif %}
                         <h2>{{ job.title }}</h2>
                         <p><strong>{{ job.company }}</strong></p>
                         {% if job.description %}
-                            <p>{{ job.description|slice:":150" }}{% if job.description|length > 150 %}...{% endif %}</p>
+                            <p>{{ job.description|slice:":120" }}{% if job.description|length > 120 %}...{% endif %}</p>
                         {% endif %}
                         {% if job.duration_text %}
                             <span class="card-label">{{ job.duration_text }}</span>
                         {% endif %}
-                    </a>
+                        
+                        {% with tags=job.get_tags_list %}
+                            {% if tags %}
+                                <div class="tags-container">
+                                    {% for tag in tags %}
+                                        <span class="tag-badge">{{ tag }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
                 {% endfor %}
             </div>
         {% else %}

@@ -6,6 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Browse Executives</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    <style>
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 1rem;
+        }
+        .tag-badge {
+            display: inline-block;
+            background: #f0f4ff;
+            color: #5a67d8;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 9999px;
+            border: 1px solid #c3dafe;
+            text-transform: lowercase;
+            white-space: nowrap;
+        }
+        .card-clickable {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -29,10 +52,8 @@
             <h1>Fractional Executives</h1>
             
             {% if user.is_authenticated %}
-                <!-- Logged IN: Show create button -->
                 <a href="{% url 'create_profile' %}" class="btn">Create Your Profile</a>
             {% else %}
-                <!-- Logged OUT: Show sign up CTA -->
                 <a href="{% url 'signup' %}" class="btn">Sign Up to Create Profile</a>
             {% endif %}
         </div>
@@ -40,19 +61,26 @@
         {% if execs %}
             <div class="card-grid">
                 {% for exec in execs %}
-                    <a href="{% url 'exec_detail' exec.pk %}" class="card">
+                    <div class="card card-clickable" onclick="window.location='{% url 'exec_detail' exec.pk %}'">
                         {% if exec.rate_text %}
                             <span class="card-rate">{{ exec.rate_text }}</span>
                         {% endif %}
                         <h2>{{ exec.name }}</h2>
                         <p><strong>{{ exec.title }}</strong></p>
                         {% if exec.bio %}
-                            <p>{{ exec.bio|slice:":150" }}{% if exec.bio|length > 150 %}...{% endif %}</p>
+                            <p>{{ exec.bio|slice:":120" }}{% if exec.bio|length > 120 %}...{% endif %}</p>
                         {% endif %}
-                        {% if exec.skills_text %}
-                            <p class="card-skills">{{ exec.skills_text }}</p>
-                        {% endif %}
-                    </a>
+                        
+                        {% with tags=exec.get_tags_list %}
+                            {% if tags %}
+                                <div class="tags-container">
+                                    {% for tag in tags %}
+                                        <span class="tag-badge">{{ tag }}</span>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+                    </div>
                 {% endfor %}
             </div>
         {% else %}
