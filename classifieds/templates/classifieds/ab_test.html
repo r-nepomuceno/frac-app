@@ -4,14 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fractional Executive Marketplace</title>
-    <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    <title>A/B Test - restless-sound</title>
+    <link rel="stylesheet" href="{% static 'frac-app.css' %}?v=4">
+    
+    <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-94TQ21MWZ6"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-94TQ21MWZ6');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-94TQ21MWZ6');
+      
+      // Track A/B variant shown
+      gtag('event', 'ab_test_view', {
+        'variant': '{{ variant }}',
+        'team': 'restless-sound'
+      });
     </script>
 </head>
 <body>
@@ -31,51 +39,86 @@
         </div>
     </nav>
 
-    <!-- A/B Test Hero Section -->
-    <div style="background: linear-gradient(135deg, {{ content.color }} 0%, {% if variant == 'A' %}#764ba2{% else %}#38a169{% endif %} 100%); color: white; padding: 6rem 2rem; text-align: center;">
-        <div style="max-width: 800px; margin: 0 auto;">
-            <!-- Variant Badge (for testing visibility) -->
-            <div style="display: inline-block; background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; margin-bottom: 1rem;">
-                Variant {{ variant }}
-            </div>
+    <div class="container" style="margin-top: 4rem; text-align: center;">
+        <!-- Team Info -->
+        <div style="max-width: 600px; margin: 0 auto;">
+            <h1>Team: restless-sound</h1>
             
-            <h1 style="font-size: 3rem; margin-bottom: 1rem; color: white;">
-                {{ content.headline }}
-            </h1>
-            <p style="font-size: 1.25rem; opacity: 0.9; margin-bottom: 2rem; color: white;">
-                {{ content.subheadline }}
-            </p>
-            <a href="{% url 'exec_list' %}" class="btn" style="background: white; color: {{ content.color }}; padding: 1rem 2rem; font-size: 1.1rem;">
-                {{ content.cta_text }} →
-            </a>
-        </div>
-    </div>
-
-    <!-- Info Section -->
-    <div class="container" style="margin-top: 4rem; margin-bottom: 4rem;">
-        <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-            <h2 style="margin-bottom: 1rem;">A/B Test Demonstration</h2>
-            <p style="color: #4a5568; line-height: 1.8;">
-                This page demonstrates A/B testing functionality. You've been assigned to 
-                <strong>Variant {{ variant }}</strong>. Your assignment is stored in your session 
-                and will persist across page refreshes.
-            </p>
-            
-            <div style="margin-top: 2rem; padding: 1.5rem; background: #f7fafc; border-radius: 12px; text-align: left;">
-                <h3 style="margin-bottom: 0.75rem;">Technical Details:</h3>
-                <ul style="color: #4a5568; line-height: 2;">
-                    <li><strong>Endpoint:</strong> /b77952e</li>
-                    <li><strong>Team:</strong> restless-sound</li>
-                    <li><strong>Your Variant:</strong> {{ variant }}</li>
-                    <li><strong>Headline:</strong> "{{ content.headline }}"</li>
-                    <li><strong>CTA:</strong> "{{ content.cta_text }}"</li>
+            <!-- Team Member Nicknames -->
+            <div style="margin: 2rem 0; padding: 2rem; background: #f7fafc; border-radius: 12px;">
+                <h2 style="margin-bottom: 1rem;">Team Members</h2>
+                <ul style="list-style: none; padding: 0; font-size: 1.25rem; line-height: 2;">
+                    <li>Dylan Safyer, Henry Melzner, Joseph Dobson, Robby Nepomuceno, Wit Wattananimitgul</li>
+                    <!-- Add more team member nicknames here if needed -->
                 </ul>
             </div>
             
-            <p style="margin-top: 2rem; font-size: 0.9rem; color: #718096;">
-                To see the other variant, clear your browser cookies/session and refresh.
-            </p>
+            <!-- A/B Test Variant Display -->
+            <div style="margin: 2rem 0; padding: 1rem; background: {% if variant == 'A' %}#f0fff4{% else %}#ebf8ff{% endif %}; border-radius: 8px;">
+                <p style="margin-bottom: 0.5rem; color: #718096;">Current Variant:</p>
+                <p style="font-size: 1.5rem; font-weight: 600; color: {% if variant == 'A' %}#276749{% else %}#2b6cb0{% endif %};">
+                    Variant {{ variant }}
+                </p>
+            </div>
+            
+            <!-- A/B Test Button (REQUIRED: id="abtest") -->
+            <div style="margin: 3rem 0;">
+                {% if variant == 'A' %}
+                    <button id="abtest" onclick="trackButtonClick('kudos')" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; font-size: 1.5rem; font-weight: 600; padding: 1rem 3rem; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.2s;">
+                        kudos
+                    </button>
+                {% else %}
+                    <button id="abtest" onclick="trackButtonClick('thanks')" style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); color: white; font-size: 1.5rem; font-weight: 600; padding: 1rem 3rem; border: none; border-radius: 12px; cursor: pointer; transition: transform 0.2s;">
+                        thanks
+                    </button>
+                {% endif %}
+            </div>
+            
+            <!-- Technical Info -->
+            <div style="margin-top: 3rem; padding: 1.5rem; background: #f7fafc; border-radius: 12px; text-align: left;">
+                <h3 style="margin-bottom: 1rem;">A/B Test Details</h3>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 0.5rem 0; color: #718096;">Endpoint:</td>
+                        <td style="padding: 0.5rem 0; font-weight: 500;">/b77952e</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem 0; color: #718096;">Team:</td>
+                        <td style="padding: 0.5rem 0; font-weight: 500;">restless-sound</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem 0; color: #718096;">Variant:</td>
+                        <td style="padding: 0.5rem 0; font-weight: 500;">{{ variant }}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0.5rem 0; color: #718096;">Button Text:</td>
+                        <td style="padding: 0.5rem 0; font-weight: 500;">{% if variant == 'A' %}kudos{% else %}thanks{% endif %}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
+    
+    <script>
+        // Track button clicks in Google Analytics
+        function trackButtonClick(buttonText) {
+            gtag('event', 'ab_test_click', {
+                'variant': '{{ variant }}',
+                'button_text': buttonText,
+                'team': 'restless-sound'
+            });
+            
+            // Visual feedback
+            alert('Button clicked! Variant {{ variant }} - ' + buttonText);
+        }
+        
+        // Hover effect for button
+        document.getElementById('abtest').addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+        });
+        document.getElementById('abtest').addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    </script>
 </body>
 </html>

@@ -4,85 +4,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Startups</title>
-    <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    <title>For Startups - Frac</title>
+    <link rel="stylesheet" href="{% static 'frac-app.css' %}?v=4">
+    
+    <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-94TQ21MWZ6"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-94TQ21MWZ6');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-94TQ21MWZ6');
     </script>
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'home' %}" style="font-weight: 600; margin-right: 1rem;">Frac</a>
             <a href="{% url 'exec_list' %}">Executives</a>
-            <a href="{% url 'job_list' %}">Jobs</a>
+            <a href="{% url 'job_list' %}">Opportunities</a>
             
             {% if user.is_authenticated %}
                 <a href="{% url 'dashboard' %}">Dashboard</a>
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
+                <a href="{% url 'signup' %}" class="btn" style="margin-left: auto;">Sign Up</a>
             {% endif %}
         </div>
     </nav>
 
-    <div class="container" style="margin-top: 4rem;">
-        <!-- Header -->
-        <div style="text-align: center; max-width: 700px; margin: 0 auto 4rem;">
-            <h1 style="font-size: 3rem; margin-bottom: 1rem;">For Startups</h1>
-            <p style="font-size: 1.25rem; color: #4a5568; line-height: 1.6;">
-                Find the perfect fractional executive to accelerate your growth. 
-                Access senior leadership expertise without the full-time commitment.
-            </p>
-        </div>
+    <div class="hero-section">
+        <h1>Find the leadership<br>your startup needs</h1>
+        <p>Access experienced executives on a fractional basis. Get strategic guidance without the full-time commitment or cost.</p>
+    </div>
 
-        <!-- Action Cards - FIXED: Now divs with button inside -->
-        <div class="button-grid">
-            <!-- Browse Executives Card -->
+    <div class="container">
+        <div class="button-grid" style="max-width: 800px; margin: 0 auto;">
             <div class="button-card">
-                <h3>Browse Fractional Executives</h3>
-                <p>Explore profiles of experienced leaders ready to help scale your company</p>
-                <div style="margin-top: 1.5rem;">
-                    <a href="{% url 'exec_list' %}" class="btn">Browse Executives</a>
-                </div>
+                <h3>Browse Executives</h3>
+                <p>Explore profiles of experienced fractional leaders across various specialties—CFOs, CTOs, CMOs, and more.</p>
+                <a href="{% url 'exec_list' %}" class="btn">View Executives →</a>
             </div>
             
-            <!-- Post Opportunity Card -->
             <div class="button-card">
                 <h3>Post an Opportunity</h3>
-                <p>Share your fractional executive role and connect with qualified candidates</p>
-                <div style="margin-top: 1.5rem;">
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'post_job' %}" class="btn">Post Opportunity</a>
-                    {% else %}
-                        <a href="{% url 'signup' %}" class="btn">Sign Up to Post</a>
-                    {% endif %}
-                </div>
+                <p>Describe your needs and let qualified executives find you. Get matched based on skills and experience.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'post_job' %}" class="btn">Post Job →</a>
+                {% else %}
+                    <a href="{% url 'signup' %}" class="btn">Sign Up to Post →</a>
+                {% endif %}
             </div>
         </div>
-
-        <!-- Benefits Section -->
-        <div style="margin-top: 6rem; padding: 3rem; background: #f7fafc; border-radius: 16px;">
-            <h2 style="text-align: center; margin-bottom: 2rem;">Why Hire Fractional Executives?</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem;">
-                <div>
-                    <h3 style="margin-bottom: 0.5rem;">💰 Cost Effective</h3>
-                    <p style="color: #4a5568;">Access senior talent at a fraction of full-time cost</p>
-                </div>
-                <div>
-                    <h3 style="margin-bottom: 0.5rem;">⚡ Fast Impact</h3>
-                    <p style="color: #4a5568;">Experienced leaders hit the ground running</p>
-                </div>
-                <div>
-                    <h3 style="margin-bottom: 0.5rem;">🎯 Flexible</h3>
-                    <p style="color: #4a5568;">Scale up or down based on your needs</p>
-                </div>
-            </div>
+        
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="{% url 'for_fractionals' %}" style="color: var(--text-secondary); text-decoration: underline;">Are you a fractional executive? →</a>
         </div>
     </div>
 </body>

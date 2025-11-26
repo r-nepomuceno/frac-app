@@ -4,43 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Browse Executives</title>
-    <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    <title>Fractional Executives</title>
+    <link rel="stylesheet" href="{% static 'frac-app.css' %}?v=4">
+    
+    <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-94TQ21MWZ6"></script>
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-94TQ21MWZ6');
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-94TQ21MWZ6');
     </script>
+    
     <style>
+        a { text-decoration: none !important; }
         .tags-container {
             display: flex;
             flex-wrap: wrap;
             gap: 0.4rem;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
         }
         .tag-badge {
             display: inline-block;
-            background: #f0f4ff;
-            color: #5a67d8;
+            background: #ebe5db;
+            color: #5c5c5c;
             font-size: 0.7rem;
-            font-weight: 600;
+            font-weight: 500;
             padding: 0.25rem 0.6rem;
-            border-radius: 9999px;
-            border: 1px solid #c3dafe;
+            border-radius: 4px;
             text-transform: lowercase;
-            white-space: nowrap;
         }
-        .card-clickable {
-            cursor: pointer;
-        }
+        .card-clickable { cursor: pointer; }
     </style>
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'home' %}" style="font-weight: 600; margin-right: 1rem;">Frac</a>
             <a href="{% url 'exec_list' %}">Executives</a>
             <a href="{% url 'job_list' %}">Jobs</a>
             
@@ -49,7 +49,7 @@
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
+                <a href="{% url 'signup' %}" class="btn" style="margin-left: auto;">Sign Up</a>
             {% endif %}
         </div>
     </nav>
@@ -57,11 +57,10 @@
     <div class="container">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
             <h1>Fractional Executives</h1>
-            
             {% if user.is_authenticated %}
                 <a href="{% url 'create_profile' %}" class="btn">Create Your Profile</a>
             {% else %}
-                <a href="{% url 'signup' %}" class="btn">Sign Up to Create Profile</a>
+                <a href="{% url 'signup' %}" class="btn">Create Your Profile</a>
             {% endif %}
         </div>
 
@@ -75,7 +74,7 @@
                         <h2>{{ exec.name }}</h2>
                         <p><strong>{{ exec.title }}</strong></p>
                         {% if exec.bio %}
-                            <p>{{ exec.bio|slice:":120" }}{% if exec.bio|length > 120 %}...{% endif %}</p>
+                            <p style="font-size: 0.9rem; color: #5c5c5c;">{{ exec.bio|truncatewords:20 }}</p>
                         {% endif %}
                         
                         {% with tags=exec.get_tags_list %}
@@ -91,7 +90,12 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p>No executive profiles yet. Be the first!</p>
+            <div class="empty-state">
+                <p>No executive profiles yet.</p>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'create_profile' %}" class="btn">Be the first to create a profile</a>
+                {% endif %}
+            </div>
         {% endif %}
     </div>
 </body>

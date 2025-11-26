@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Dashboard</title>
-    <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+    <link rel="stylesheet" href="{% static 'frac-app.css' %}?v=4">
     
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-94TQ21MWZ6"></script>
@@ -26,50 +26,63 @@
         }
         .tag-badge {
             display: inline-block;
-            background: #f0f4ff;
-            color: #5a67d8;
+            background: var(--bg-accent-tan, #ebe5db);
+            color: var(--text-secondary, #5c5c5c);
             font-size: 0.7rem;
-            font-weight: 600;
+            font-weight: 500;
             padding: 0.25rem 0.6rem;
-            border-radius: 9999px;
-            border: 1px solid #c3dafe;
+            border-radius: 4px;
             text-transform: lowercase;
         }
         .match-badge {
             display: inline-block;
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            background: var(--text-primary, #1a1a1a);
             color: white;
             font-size: 0.7rem;
             font-weight: 600;
             padding: 0.3rem 0.6rem;
-            border-radius: 9999px;
+            border-radius: 4px;
         }
+        .card-clickable {
+            cursor: pointer;
+        }
+        
+        /* Suggestions sections with Anthropic colors */
         .suggestions-section {
-            background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
-            border: 1px solid #9ae6b4;
-            border-radius: 16px;
+            background: var(--bg-accent-green, #e8efe8);
+            border: none;
+            border-radius: 12px;
             padding: 1.5rem;
             margin-top: 2rem;
         }
-        .suggestions-section.blue {
-            background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
-            border-color: #90cdf4;
+        .suggestions-section.for-startups {
+            background: var(--bg-accent-blue, #e8eaef);
         }
         .suggestions-section h2 {
             margin-bottom: 1rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            color: var(--text-primary, #1a1a1a);
         }
-        .card-clickable {
-            cursor: pointer;
+        
+        /* Match tags in green section */
+        .suggestions-section .tag-badge {
+            background: rgba(122, 154, 122, 0.3);
+            color: var(--text-primary, #1a1a1a);
+        }
+        
+        /* Match tags in blue/lavender section */
+        .suggestions-section.for-startups .tag-badge {
+            background: rgba(138, 138, 173, 0.3);
+            color: var(--text-primary, #1a1a1a);
         }
     </style>
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'home' %}" style="font-weight: 600; margin-right: 1rem;">Frac</a>
             <a href="{% url 'exec_list' %}">Executives</a>
             <a href="{% url 'job_list' %}">Jobs</a>
             <a href="{% url 'dashboard' %}">Dashboard</a>
@@ -81,7 +94,7 @@
         <h1>My Dashboard</h1>
         <p>Welcome back, <strong>{{ user.username }}</strong>!</p>
 
-        <!-- Suggested Jobs Section (for executives) -->
+        <!-- Suggested Jobs Section (for executives) - Sage Green -->
         {% if suggested_jobs %}
             <div class="suggestions-section">
                 <h2>🎯 Jobs Matching Your Skills</h2>
@@ -96,7 +109,7 @@
                             <p><strong>{{ item.job.company }}</strong></p>
                             <div class="tags-container">
                                 {% for tag in item.match_info.matching_tags %}
-                                    <span class="tag-badge" style="background: #c6f6d5; color: #276749; border-color: #9ae6b4;">{{ tag }}</span>
+                                    <span class="tag-badge">{{ tag }}</span>
                                 {% endfor %}
                             </div>
                         </div>
@@ -105,23 +118,23 @@
             </div>
         {% endif %}
         
-        <!-- Suggested Executives Section (for startups) -->
+        <!-- Suggested Executives Section (for startups) - Lavender -->
         {% if suggested_executives %}
-            <div class="suggestions-section blue">
+            <div class="suggestions-section for-startups">
                 <h2>🎯 Executives Matching Your Job Requirements</h2>
                 <div class="card-grid">
                     {% for item in suggested_executives %}
                         <div class="card card-clickable" onclick="window.location='{% url 'exec_detail' item.executive.pk %}'">
-                            <span class="match-badge" style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);">{{ item.match_info.match_count }} skills match</span>
+                            <span class="match-badge">{{ item.match_info.match_count }} skills match</span>
                             {% if item.executive.rate_text %}
                                 <span class="card-rate">{{ item.executive.rate_text }}</span>
                             {% endif %}
                             <h2 style="margin-top: 0.5rem;">{{ item.executive.name }}</h2>
                             <p><strong>{{ item.executive.title }}</strong></p>
-                            <p style="font-size: 0.85rem; color: #718096;">For: {{ item.job.title }}</p>
+                            <p style="font-size: 0.85rem; color: var(--text-muted, #8c8c8c);">For: {{ item.job.title }}</p>
                             <div class="tags-container">
                                 {% for tag in item.match_info.matching_tags %}
-                                    <span class="tag-badge" style="background: #bee3f8; color: #2b6cb0; border-color: #90cdf4;">{{ tag }}</span>
+                                    <span class="tag-badge">{{ tag }}</span>
                                 {% endfor %}
                             </div>
                         </div>
