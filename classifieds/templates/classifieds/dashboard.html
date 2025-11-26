@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Dashboard</title>
+    <link rel="stylesheet" href="{% static 'frac-app.css' %}">
+</head>
+<body>
+    <nav>
+        <div class="container">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'exec_list' %}">Executives</a>
+            <a href="{% url 'job_list' %}">Jobs</a>
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>My Dashboard</h1>
+        <p>Welcome back, <strong>{{ user.username }}</strong>!</p>
+
+        <!-- Executive Profiles Section -->
+        <div style="margin-top: 3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>My Executive Profiles</h2>
+                <a href="{% url 'create_profile' %}" class="btn">Create New Profile</a>
+            </div>
+
+            {% if my_profiles %}
+                <div class="card-grid">
+                    {% for profile in my_profiles %}
+                        <div class="card">
+                            {% if profile.rate_text %}
+                                <span class="card-rate">{{ profile.rate_text }}</span>
+                            {% endif %}
+                            <h2>{{ profile.name }}</h2>
+                            <p><strong>{{ profile.title }}</strong></p>
+                            {% if profile.skills_text %}
+                                <p>{{ profile.skills_text }}</p>
+                            {% endif %}
+                            <div style="margin-top: 1rem;">
+                                <a href="{% url 'edit_profile' profile.pk %}" class="btn">Edit</a>
+                                <a href="{% url 'exec_detail' profile.pk %}" class="btn btn-secondary">View</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>You haven't created any executive profiles yet.</p>
+                    <a href="{% url 'create_profile' %}" class="btn">Create Your First Profile</a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Job Postings Section -->
+        <div style="margin-top: 3rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2>My Job Postings</h2>
+                <a href="{% url 'post_job' %}" class="btn">Post New Job</a>
+            </div>
+
+            {% if my_jobs %}
+                <div class="card-grid">
+                    {% for job in my_jobs %}
+                        <div class="card">
+                            {% if job.budget_text %}
+                                <span class="card-rate">{{ job.budget_text }}</span>
+                            {% endif %}
+                            <h2>{{ job.title }}</h2>
+                            <p><strong>{{ job.company }}</strong></p>
+                            {% if job.duration_text %}
+                                <span class="card-label">{{ job.duration_text }}</span>
+                            {% endif %}
+                            <div style="margin-top: 1rem;">
+                                <a href="{% url 'edit_job' job.pk %}" class="btn">Edit</a>
+                                <a href="{% url 'job_detail' job.pk %}" class="btn btn-secondary">View</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>You haven't posted any jobs yet.</p>
+                    <a href="{% url 'post_job' %}" class="btn">Post Your First Job</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

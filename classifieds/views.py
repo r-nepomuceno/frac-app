@@ -44,6 +44,64 @@ def logout_view(request):
     return redirect("home")
 
 
+@login_required
+def dashboard(request):
+    """User dashboard showing their profiles and jobs"""
+    my_profiles = ExecutiveProfile.objects.filter(owner=request.user)
+    my_jobs = Job.objects.filter(owner=request.user)
+    
+    return render(request, "classifieds/dashboard.html", {
+        "my_profiles": my_profiles,
+        "my_jobs": my_jobs,
+    })
+
+
+@login_required
+def edit_profile(request, pk):
+    """Edit an executive profile (must be owner)"""
+    profile = get_object_or_404(ExecutiveProfile, pk=pk)
+    
+    # Authorization check: only owner can edit
+    if profile.owner != request.user:
+        return redirect("exec_list")  # Redirect if not owner
+    
+    if request.method == "POST":
+        form = ExecutiveProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect("dashboard")
+    else:
+        form = ExecutiveProfileForm(instance=profile)
+    
+    return render(request, "classifieds/edit_profile.html", {
+        "form": form,
+        "profile": profile
+    })
+
+
+@login_required
+def edit_job(request, pk):
+    """Edit a job posting (must be owner)"""
+    job = get_object_or_404(Job, pk=pk)
+    
+    # Authorization check: only owner can edit
+    if job.owner != request.user:
+        return redirect("job_list")  # Redirect if not owner
+    
+    if request.method == "POST":
+        form = JobForm(request.POST, instance=job)
+        if form.is_valid():
+            form.save()
+            return redirect("dashboard")
+    else:
+        form = JobForm(instance=job)
+    
+    return render(request, "classifieds/edit_job.html", {
+        "form": form,
+        "job": job
+    })
+
+
 # ========== HOME ==========
 
 def home(request):

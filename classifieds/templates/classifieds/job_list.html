@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Fractional Roles</title>
+    <title>Browse Jobs</title>
     <link rel="stylesheet" href="{% static 'frac-app.css' %}">
 </head>
 <body>
@@ -13,37 +13,50 @@
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'exec_list' %}">Executives</a>
             <a href="{% url 'job_list' %}">Jobs</a>
-            <a href="{% url 'create_profile' %}">Create Profile</a>
-            <a href="{% url 'post_job' %}">Post Job</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
+            {% endif %}
         </div>
     </nav>
 
     <div class="container">
-        <h1>Open Fractional Roles</h1>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1>Fractional Opportunities</h1>
+            
+            {% if user.is_authenticated %}
+                <!-- Logged IN: Show post button -->
+                <a href="{% url 'post_job' %}" class="btn">Post an Opportunity</a>
+            {% else %}
+                <!-- Logged OUT: Show sign up CTA -->
+                <a href="{% url 'signup' %}" class="btn">Sign Up to Post Job</a>
+            {% endif %}
+        </div>
 
         {% if jobs %}
             <div class="card-grid">
                 {% for job in jobs %}
-                    <div class="card">
+                    <a href="{% url 'job_detail' job.pk %}" class="card">
                         {% if job.budget_text %}
                             <span class="card-rate">{{ job.budget_text }}</span>
                         {% endif %}
-                        <h2><a href="{% url 'job_detail' job.pk %}">{{ job.title }}</a></h2>
+                        <h2>{{ job.title }}</h2>
                         <p><strong>{{ job.company }}</strong></p>
+                        {% if job.description %}
+                            <p>{{ job.description|slice:":150" }}{% if job.description|length > 150 %}...{% endif %}</p>
+                        {% endif %}
                         {% if job.duration_text %}
                             <span class="card-label">{{ job.duration_text }}</span>
                         {% endif %}
-                        <div style="margin-top: 1rem;">
-                            <a href="{% url 'job_detail' job.pk %}" class="btn">View Details</a>
-                        </div>
-                    </div>
+                    </a>
                 {% endfor %}
             </div>
         {% else %}
-            <div class="empty-state">
-                <p>No jobs posted yet.</p>
-                <a href="{% url 'post_job' %}" class="btn">Post the first job</a>
-            </div>
+            <p>No job postings yet. Be the first!</p>
         {% endif %}
     </div>
 </body>
