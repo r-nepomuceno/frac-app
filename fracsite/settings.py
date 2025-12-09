@@ -18,6 +18,13 @@ SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
 # Debug mode
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
+# ========== NEW: ENVIRONMENT CONFIGURATION ==========
+# Detect if running in staging or production
+ENVIRONMENT = os.getenv("ENVIRONMENT", "production")
+IS_STAGING = ENVIRONMENT == "staging"
+IS_PRODUCTION = ENVIRONMENT == "production"
+# ====================================================
+
 # Allowed hosts
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",") if os.getenv("ALLOWED_HOSTS") else []
 
