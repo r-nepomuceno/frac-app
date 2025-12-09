@@ -22,7 +22,7 @@
 
 ### Velocity Trend
 
-![Velocity and Burndown Chart](../charts/velocity_burndown_chart.png)
+![Velocity and Burndown Chart](https://github.com/r-nepomuceno/frac-app/blob/main/docs/charts/velocity_burndown_chart.png)
 
 **Key Metrics:**
 - **Total Story Points Delivered:** 116 points
@@ -47,7 +47,7 @@
 
 ### Individual Sprint Burndowns
 
-![Individual Sprint Burndowns](../charts/sprint_burndown_individual.png)
+![Individual Sprint Burndowns]([../charts/sprint_burndown_individual.png](https://github.com/r-nepomuceno/frac-app/blob/main/docs/charts/sprint_burndown_individual.png))
 
 All four sprints showed consistent daily progress with zero scope creep. Sprint 4's steeper burndown reflects the compressed timeline (2 days vs. typical 7 days).
 
