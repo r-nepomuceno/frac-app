@@ -382,7 +382,7 @@ python manage.py test --verbosity=2
 
 ## License
 
-This project is part of an academic assignment for Yale School of Management (MGT 802).
+This project is part of an academic assignment for Yale School of Management (MGT 656).
 
 ---
 
@@ -391,7 +391,7 @@ This project is part of an academic assignment for Yale School of Management (MG
 - **Django Documentation** - Comprehensive framework guidance
 - **Render** - Seamless deployment platform
 - **Anthropic Claude** - Development assistance and code review
-- **Yale SOM MGT 802** - Course structure and requirements
+- **Yale SOM MGT 656** - Course structure and requirements
 
 ---
 
