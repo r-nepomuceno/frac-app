@@ -1,78 +1,111 @@
-# Sprint 3 Planning
+# Sprint 3 — Planning
 
-## Sprint Goal
-Complete core marketplace functionality: Users can create executive profiles, browse executives, post jobs, and browse job listings with a professional UI.
+**Dates:** November 19-26, 2025  
+**Sprint Goal:** Complete core marketplace functionality with user authentication, content ownership, professional UI, and full CRUD operations
 
-## Selected User Stories from Backlog
+---
 
-### High Priority (Sprint 3)
-1. **As a fractional executive, I can create my profile** (Story Points: 5)
-   - Acceptance Criteria: Form with all fields (name, title, bio, skills, rate, email, timezone)
-   - Owner: Team
-   - Status: Planned
+## Sprint Objectives
 
-2. **As a company, I can browse executive profiles** (Story Points: 3)
-   - Acceptance Criteria: Card-based display, filterable list, view details
-   - Owner: Team
-   - Status: Planned
+1. Implement user authentication system (signup, login, logout)
+2. Add content ownership and authorization
+3. Build user dashboard for managing profiles and opportunities
+4. Create professional, cohesive UI design
+5. Enable full CRUD operations (Create, Read, Update, Delete)
+6. Implement navigation system across all pages
 
-3. **As a company, I can post job openings** (Story Points: 5)
-   - Acceptance Criteria: Form with title, company, description, duration, budget, contact
-   - Owner: Team
-   - Status: Planned
+---
 
-4. **As an executive, I can browse job listings** (Story Points: 3)
-   - Acceptance Criteria: Card-based display, view job details
-   - Owner: Team
-   - Status: Planned
+## Selected User Stories
 
-5. **As a user, I can navigate between all pages** (Story Points: 2)
-   - Acceptance Criteria: Navigation bar on all pages, home page with clear CTAs
-   - Owner: Team
-   - Status: Planned
+| User Story | Priority | Story Points | Assignee |
+|------------|----------|--------------|----------|
+| User authentication (signup/login/logout) | High | 5 | Team |
+| Content ownership and authorization | High | 3 | Team |
+| User dashboard | High | 5 | Team |
+| Executive profile creation form | High | 5 | Team |
+| Opportunity posting form | High | 5 | Team |
+| Edit profile functionality | Medium | 3 | Team |
+| Edit opportunity functionality | Medium | 3 | Team |
+| Professional UI design (CSS framework) | High | 3 | Team |
+| Navigation system | Medium | 2 | Team |
 
-6. **As a user, I want a professional, cohesive design** (Story Points: 3)
-   - Acceptance Criteria: CSS styling, card layouts, responsive design
-   - Owner: Team
-   - Status: Planned
+**Total Planned Points:** 34
 
-### Total Story Points Committed: 21 points
+---
 
-## Team Assignments
-- Backend development (Django models, views, forms): Team
-- Frontend templates and navigation: Team
-- CSS styling and design: Team
-- Deployment configuration: Team
-- Testing and documentation: Team
+## Team Capacity
+
+- **Team members:** 5 (Robby, Wit, Dylan, Henry, Joseph)
+- **Sprint duration:** 1 week
+- **Estimated capacity:** 30-35 story points (scaling up from Sprint 1-2 average of 21.5)
+- **Planned work:** 34 story points
+- **Buffer:** 1 point (~3%)
+
+---
 
 ## Dependencies
-- Render deployment working (depends on Sprint 2 setup)
-- Database migrations running correctly
-- Static file serving configured properly
-- PostgreSQL database on Render
+
+- Sprint 2 deployment working successfully
+- Django authentication system available
+- Forms framework for CRUD operations
+- CSS design system (custom, not Bootstrap/Tailwind)
+- Database migrations for user ownership fields
+
+---
 
 ## Risks
-1. **CSS static file serving**: Static files may not work initially on Render
-   - Mitigation: WhiteNoise middleware configured, collectstatic in build script
 
-2. **URL routing conflicts**: Executive and job routes might conflict
-   - Mitigation: Separate URL config files for jobs and executives
+| Risk | Impact | Likelihood | Mitigation |
+|------|--------|------------|------------|
+| Authentication complexity | High | Medium | Use Django's built-in auth system |
+| CSS static file issues on Render | High | High | Test WhiteNoise configuration early |
+| URL routing conflicts | Medium | High | Use separate URL config files |
+| Form validation complexity | Medium | Medium | Start simple, iterate |
+| Time constraint for styling | Medium | High | Focus on function first |
 
-3. **Form validation**: Complex forms may need additional validation
-   - Mitigation: Start simple, add validation incrementally
+---
 
-4. **Time constraint**: Limited time for comprehensive styling
-   - Mitigation: Focus on functional design first, enhance later
+## Technical Approach
 
-## Sprint Timeline
-- Duration: 1 week
-- Sprint Start: November 19, 2025
-- Sprint End: November 26, 2025
-- Daily standups: As needed via team communication
+### Authentication Strategy
+- Use Django's built-in User model
+- Create custom signup/login templates  
+- Add `@login_required` decorators
+- Session-based authentication
+
+### Content Ownership Strategy  
+- Add `owner` ForeignKey to models
+- Authorization checks in views
+- Filter dashboard by owner
+- Display ownership in templates
+
+### UI Design Strategy
+- Custom CSS framework (Anthropic-inspired)
+- Card-based layouts
+- Consistent color palette
+- Responsive design
+- Hover effects and transitions
+
+---
 
 ## Definition of Done
-- Code merged to main branch
-- Tests written and passing
-- Deployed to Render staging
-- Documentation updated
-- User journey testable end-to-end
+
+- [ ] Users can sign up, log in, and log out
+- [ ] Users can only edit their own content
+- [ ] Dashboard shows user's content
+- [ ] CRUD forms functional
+- [ ] Professional CSS applied
+- [ ] Navigation working
+- [ ] Responsive on mobile/desktop
+- [ ] Tested in production
+- [ ] Code deployed
+
+---
+
+## Sprint Schedule
+
+**Days 1-2:** Authentication & ownership  
+**Days 3-4:** Forms & CRUD  
+**Days 5-6:** Dashboard & UI  
+**Day 7:** Testing & review
