@@ -47,7 +47,7 @@
 
 ### Individual Sprint Burndowns
 
-![Individual Sprint Burndowns]([../charts/sprint_burndown_individual.png](https://github.com/r-nepomuceno/frac-app/blob/main/docs/charts/sprint_burndown_individual.png))
+![Individual Sprint Burndowns](https://github.com/r-nepomuceno/frac-app/blob/main/docs/charts/sprint_burndown_individual.png)
 
 All four sprints showed consistent daily progress with zero scope creep. Sprint 4's steeper burndown reflects the compressed timeline (2 days vs. typical 7 days).
 
