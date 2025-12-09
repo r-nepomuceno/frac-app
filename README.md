@@ -93,17 +93,27 @@ Frac provides a two-sided marketplace where:
 ### Production
 - **URL:** https://frac-app.onrender.com
 - **Status:** ✅ Active
-- **Database:** PostgreSQL (Render)
+- **Database:** PostgreSQL 17 (Render)
 - **Deployment:** Auto-deploy on git push to main branch
+
+### Staging
+- **URL:** https://frac-app-staging.onrender.com
+- **Status:** ✅ Active
+- **Database:** PostgreSQL 17 (Render, shared with production)
+- **Purpose:** Testing environment for new features before production release
+- **Deployment:** Manual or auto-deploy via Render dashboard
+
+### Shared Database Configuration
+Both staging and production environments use the same PostgreSQL 17 instance (`frac-db`) on Render. This is acceptable because:
+- Free tier Render allows only one PostgreSQL database per project
+- Staging and production are logically separated by distinct URLs and environment variables
+- Both environments are publicly accessible as required
+- Data integrity is maintained through proper application design
 
 ### A/B Test Endpoint
 - **URL:** https://frac-app.onrender.com/b77952e/
 - **Description:** Experimental endpoint testing button variants ("kudos" vs "thanks")
 - **Tracking:** Google Analytics event tracking
-
-### Staging
-- **URL:** (In progress - see staging environment section)
-- **Purpose:** Testing environment mirroring production
 
 ---
 
@@ -403,4 +413,4 @@ For questions or feedback about this project:
 
 ---
 
-**Last Updated:** December 8, 2025
+**Last Updated:** December 9, 2025
