@@ -1,11 +1,11 @@
-from django.contrib.auth import login, logout
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import ExecutiveProfile, Opportunity
 from .forms import OpportunityForm, ExecutiveProfileForm
 import random
-from .matching import calculate_match, get_dashboard_matches
+from .matching import calculate_match, find_matching_opportunities_for_executive, find_matching_executives_for_opportunity, get_dashboard_matches
 
 
 # ========== AUTHENTICATION VIEWS ==========
