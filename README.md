@@ -291,11 +291,11 @@ frac-app/
 ## Team Contributions
 
 ### Team Members
-- **Robby Nepomuceno** - Product Owner, Backend Development, Deployment
-- **Wit Wattananimitgul** - UX/Research, Frontend Development
-- **Dylan Safyer** - Backend Development, Database Design
-- **Henry Melzner** - Frontend Development, Testing
-- **Joseph Dobson** - Backend Development, Documentation
+- **Robby Nepomuceno**
+- **Wit Wattananimitgul**
+- **Dylan Safyer**
+- **Henry Melzner**
+- **Joseph Dobson**
 
 ### Development Approach
 - **Agile Methodology** - 4 one-week sprints with planning, review, and retrospectives
